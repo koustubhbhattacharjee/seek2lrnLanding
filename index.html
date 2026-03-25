@@ -911,8 +911,10 @@
                 border-top: 1px solid var(--dim);
                 border-bottom: 1px solid var(--dim);
                 text-align: center;
+                align-items: center;
                 margin-bottom: 8px;
             }
+            .sidecar-body { text-align: center; }
             #hero-visuals { order: 3; }
 
             /* ── Hero canvas area ── */
@@ -1102,9 +1104,20 @@
                         ">Register as a student →</a>
                     </div>
                 </div>
-                    <div style="display:flex;gap:10px;">
-                        <button id="spiro-pause" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">pause</button>
-                        <button id="spiro-clear" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">clear</button>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
+                        <div style="display:flex;align-items:center;gap:10px;width:100%;font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);">
+                            <span style="white-space:nowrap;opacity:0.6;">center</span>
+                            <input id="pen-slider" type="range" min="0" max="160" value="95"
+                                style="flex:1;accent-color:var(--accent);cursor:pointer;height:2px;">
+                            <span style="white-space:nowrap;opacity:0.6;">vertex</span>
+                        </div>
+                        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--mid);opacity:0.5;text-align:center;line-height:1.5;">
+                            pen offset — drag to move the drawing point from the<br>centre of the rolling shape to its outer edge
+                        </div>
+                        <div style="display:flex;gap:10px;">
+                            <button id="spiro-pause" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">pause</button>
+                            <button id="spiro-clear" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">clear</button>
+                        </div>
                     </div>
 
                 </div>
@@ -1120,7 +1133,7 @@
             <div id="hero-sidecar">
                 <div class="sidecar-rule"></div>
                 <div class="sidecar-label">about the platform</div>
-                <p class="sidecar-body">Seek2lrn is a marketplace for tutors and students all over the world. Teach, learn, explore and connect with people around the world without the fear of exorbitant fees. We create the platform for you to build your community.</p>
+                <p class="sidecar-body">Seek2lrn is a marketplace for tutors and students from all over the world. Teach, learn, explore and connect with people around the world without the fear of exorbitant fees. We create the platform for you to build your community.</p>
             </div>
         </section>
 
@@ -1954,7 +1967,9 @@ gc.addEventListener("click",e=>{
     selectedShape=best.type;
     selectedLabel=best.label;
     sR=best.r||67; sD=best.d||67; sSpeed=best.speed||0.09;
-    sPrev=null;
+    sPrev=null; introT0=t_s;
+    const sl=document.getElementById("pen-slider");
+    if(sl){ sl.value=sD; }
     recentCities=recentCities.filter(c=>c!==best.label);
     recentCities.unshift(best.label);
     if(recentCities.length>3) recentCities.pop();
@@ -1985,9 +2000,19 @@ const SHAPE_PARAMS = {
 let t_s=0, spiroPaused=false, spiroAnimId, sPrev=null;
 let recentCities=[];
 let sR=67, sD=67, sSpeed=0.09;
+let introT0=0; // t_s value when current tutor's intro started
+const INTRO_SPAN = 3*2*Math.PI;  // 3 full orbits at full intensity
+const FADE_SPAN  = 2*2*Math.PI;  // then 2 orbits to dissolve
+
+function introAlpha(){
+  // 0 = full intro (big pen, bold geometry), 1 = normal
+  const e=t_s-introT0;
+  if(e<INTRO_SPAN) return 0;
+  return Math.min(1,(e-INTRO_SPAN)/FADE_SPAN);
+}
 
 function spiroInit(hard){
-  if(hard){ t_s=0; sPrev=null; soctx.clearRect(0,0,SW,SW); }
+  if(hard){ t_s=0; sPrev=null; soctx.clearRect(0,0,SW,SW); introT0=0; }
 }
 
 function penPos(t){
@@ -2063,13 +2088,22 @@ function spiroLoop(){
   const[gx,gy]=gearPos(t_s);
   const gRot=-(SR-sR)/sR*t_s;
   const col=COLORS[selectedShape]||"#C44A1A";
+  const ia=introAlpha(); // 0=intro, 1=normal
+  const iv=1-ia;         // 1=intro, 0=normal (convenience)
 
   sctx.beginPath();sctx.arc(gx,gy,sR,0,Math.PI*2);
-  sctx.strokeStyle="rgba(26,18,8,0.04)";sctx.lineWidth=0.5;sctx.stroke();
+  sctx.strokeStyle=`rgba(26,18,8,${(0.04+iv*0.28).toFixed(2)})`;
+  sctx.lineWidth=0.5+iv*1.5;sctx.stroke();
 
-  // draw selected shape inside rolling gear + city name
+  // shape inside rolling gear — bold during intro, ghost after
   sctx.save();sctx.translate(gx,gy);sctx.rotate(gRot);
-  sctx.strokeStyle=col+"33";sctx.lineWidth=1;
+  const geomA=(0.13+iv*0.87).toFixed(2);
+  sctx.strokeStyle=col;sctx.globalAlpha=Number(geomA);
+  sctx.lineWidth=1+iv*2;
+  if(iv>0.01){
+    // glow ring during intro
+    sctx.shadowColor=col;sctx.shadowBlur=12*iv;
+  }
   if(selectedShape==="sq"){
     const hw=sR/Math.SQRT2;
     sctx.strokeRect(-hw,-hw,hw*2,hw*2);
@@ -2083,17 +2117,23 @@ function spiroLoop(){
   }else{
     sctx.beginPath();sctx.arc(0,0,sR,0,Math.PI*2);sctx.stroke();
   }
-
+  sctx.globalAlpha=1;sctx.shadowBlur=0;
   sctx.restore();
 
   // arm from gear center to pen
   const[px,py]=penPos(t_s);
   sctx.beginPath();sctx.moveTo(gx,gy);sctx.lineTo(px,py);
-  sctx.strokeStyle="rgba(26,18,8,0.08)";sctx.lineWidth=0.4;sctx.stroke();
+  sctx.strokeStyle=`rgba(26,18,8,${(0.08+iv*0.22).toFixed(2)})`;
+  sctx.lineWidth=0.4+iv*0.8;sctx.stroke();
 
-  // pen dot
-  sctx.beginPath();sctx.arc(px,py,1.5,0,Math.PI*2);
-  sctx.fillStyle=col;sctx.fill();
+  // pen dot — large + glowing during intro, tiny after
+  const penR=1.5+iv*7.5;
+  sctx.save();
+  if(iv>0.01){sctx.shadowColor=col;sctx.shadowBlur=16*iv;}
+  sctx.beginPath();sctx.arc(px,py,penR,0,Math.PI*2);
+  sctx.fillStyle=col;sctx.globalAlpha=0.7+iv*0.3;sctx.fill();
+  sctx.globalAlpha=1;sctx.shadowBlur=0;
+  sctx.restore();
 
   spiroAnimId=requestAnimationFrame(spiroLoop);
 }
@@ -2103,6 +2143,11 @@ document.getElementById("spiro-pause").onclick=()=>{
   document.getElementById("spiro-pause").textContent=spiroPaused?"resume":"pause";
 };
 document.getElementById("spiro-clear").onclick=()=>{ spiroInit(true); };
+
+document.getElementById("pen-slider").oninput=function(){
+  sD=Number(this.value);
+  spiroInit(true); // clear and restart with new d
+};
 
 // init
 spiroInit();
