@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>seek2lrn® | Global Marketplace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink:       #1A0F0A;
+            --brown:     #1E1208;
+            --parchment: #F0E6DC;
+            --cream:     #F7F0EA;
+            --accent:    #E8622A;
+            --rust:      #C44A1A;
+            --mid:       #7A5A4A;
+            --dim:       rgba(26,15,10,0.08);
+        }
+
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; background: var(--cream); font-family: 'DM Mono', monospace; color: var(--ink); overflow-x: hidden; }
+
+        body::after {
+            content: ''; position: fixed; inset: 0; z-index: 9000; pointer-events: none; opacity: 0.028;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-size: 256px 256px;
+        }
+
+        .page { display: none; min-height: 100vh; }
+        .page.active { display: block; }
+
+        /* ---- TOOLBAR ---- */
+        .toolbar {
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: var(--brown); display: flex; align-items: center;
+            justify-content: space-between; padding: 0 5%; z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--parchment); cursor: pointer; text-decoration: none; }
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { text-decoration: none; color: rgba(240,230,220,0.5); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; cursor: pointer; }
+        .nav-links a:hover { color: var(--parchment); }
+        .cta { background: var(--accent) !important; color: var(--ink) !important; padding: 8px 22px; border-radius: 2px !important; letter-spacing: 0.1em; }
+
+        /* ==================
+           HOME PAGE
+        ================== */
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%; border-bottom: 1px solid var(--dim); }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 7.5rem; font-weight: 900; line-height: 0.85; margin: 0 0 36px 0; letter-spacing: -0.03em; color: var(--ink); }
+        .hero h1 em { font-style: italic; color: var(--rust); }
+        .hero p { font-size: 1.1rem; max-width: 580px; font-weight: 300; line-height: 1.7; margin: 0 0 40px 0; color: var(--mid); }
+        .hero-cta { display: inline-flex; align-items: center; gap: 14px; background: var(--brown); color: var(--accent); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 32px; cursor: pointer; transition: gap 0.3s, background 0.2s; border: none; font-family: 'DM Mono', monospace; }
+        .hero-cta:hover { gap: 24px; background: var(--rust); color: var(--parchment); }
+        .hero-cta::after { content: '→'; font-size: 1rem; }
+
+        .interactive-section { height: 100vh; background-color: var(--brown); display: flex; width: 100%; position: relative; }
+        .sidebar { width: 33%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-right: 60px; border-right: 1px solid rgba(240,230,220,0.08); }
+        .m-item { font-family: 'Playfair Display', serif; font-size: 4.8rem; font-weight: 900; color: rgba(240,230,220,0.07); transition: all 0.4s ease; cursor: pointer; line-height: 0.9; letter-spacing: -0.02em; }
+        .m-item.active { font-style: italic; color: var(--accent); transform: translateX(15px); }
+        .display-area { width: 66%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .content-wrap { position: absolute; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); width: 100%; pointer-events: none; }
+        .content-wrap.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .box { width: 500px; height: 220px; position: relative; margin-bottom: 20px; }
+        .s { position: absolute; transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1); }
+
+        /* TEACH */
+        #v-teach .teach-stage { width:220px; height:220px; background:var(--brown); display:flex; align-items:center; justify-content:center; }
+        #v-teach .root { position:relative; width:200px; height:200px; }
+        #v-teach .face { position:absolute; display:grid; overflow:hidden; }
+        #v-teach .face.ct { width:80px; height:80px; left:60px; top:60px; grid-template-columns:40px 40px; grid-template-rows:40px 40px; }
+        #v-teach .face.tl { width:56px; height:56px; left:4px;   top:4px;   grid-template-columns:28px 28px; grid-template-rows:28px 28px; }
+        #v-teach .face.tr { width:56px; height:56px; left:140px; top:4px;   grid-template-columns:28px 28px; grid-template-rows:28px 28px; }
+        #v-teach .face.bl { width:56px; height:56px; left:4px;   top:140px; grid-template-columns:28px 28px; grid-template-rows:28px 28px; }
+        #v-teach .face.br { width:56px; height:56px; left:140px; top:140px; grid-template-columns:28px 28px; grid-template-rows:28px 28px; }
+        #v-teach .cell { overflow:hidden; position:relative; }
+        #v-teach .strip { display:flex; position:absolute; top:0; left:0; height:100%; }
+        #v-teach .block { flex-shrink:0; height:100%; }
+
+                #v-learn .s { border-radius: 50%; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+        #v-learn .s3 { width: 160px; height: 160px; background: rgba(240,230,220,0.05); border: 1px solid rgba(240,230,220,0.12); z-index: 1; }
+        #v-learn .s2 { width: 110px; height: 110px; background: var(--rust); z-index: 2; }
+        #v-learn .s1 { width: 55px; height: 55px; background: var(--parchment); z-index: 3; }
+
+        #v-learn.playing .s2 { animation: learn-expand-outer 1.8s cubic-bezier(0, 0.05, 0.1, 1) 1 forwards; }
+        #v-learn.playing .s1 { animation: learn-expand-inner 1.4s cubic-bezier(0, 0.1, 0.15, 1) 1 forwards; animation-delay: 0.5s; }
+
+        @keyframes learn-expand-outer {
+            0%   { width: 110px; height: 110px; }
+            100% { width: 165px; height: 165px; }
+        }
+        @keyframes learn-expand-inner {
+            0%   { width: 55px; height: 55px; }
+            100% { width: 165px; height: 165px; }
+        }
+        #v-connect .s { border-radius: 50%; top: 50%; }
+        #v-connect .s1 {
+            width: 140px; height: 140px;
+            left: 50%;
+            background: var(--rust);
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            opacity: 0.9;
+        }
+        #v-connect .s2 {
+            width: 140px; height: 140px;
+            left: 50%;
+            background: var(--parchment);
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            opacity: 0.9;
+        }
+        #v-connect .s3 { display: none; }
+
+        /* s1 slides in from left, s2 from right, meet with overlap in center */
+        @keyframes slide-from-left {
+            0%   { transform: translate(-90%, -50%); }
+            100% { transform: translate(-70%, -50%); }
+        }
+        @keyframes slide-from-right {
+            0%   { transform: translate(-10%, -50%); }
+            100% { transform: translate(-30%, -50%); }
+        }
+
+        #v-connect.active .s1 {
+            animation: slide-from-left 5.5s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+        }
+        #v-connect.active .s2 {
+            animation: slide-from-right 5.5s cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+        }
+        /* EXPLORE — 2x2 square grid, circle travels clockwise */
+        #v-explore .explore-stage {
+            width: 220px;
+            height: 220px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            position: relative;
+        }
+
+        #v-explore .explore-rect { width: 100%; height: 100%; }
+        #v-explore .q1 { background: #F7F0EA; }
+        #v-explore .q2 { background: var(--accent); }
+        #v-explore .q3 { background: var(--accent); }
+        #v-explore .q4 { background: var(--brown); }
+
+        #v-explore .shifter {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #E8622A;
+            z-index: 10;
+            top: 20px;
+            left: 20px;
+        }
+
+        /* Explore — 2x2 clockwise circle, pure CSS */
+        @keyframes exploreLeft {
+            0.0% { left: 20.0px; }
+            2.059% { left: 20.3px; }
+            4.118% { left: 21.3px; }
+            6.176% { left: 24.4px; }
+            8.235% { left: 31.0px; }
+            10.294% { left: 75.0px; }
+            12.353% { left: 119.0px; }
+            14.412% { left: 125.6px; }
+            16.471% { left: 128.7px; }
+            18.529% { left: 129.7px; }
+            20.588% { left: 130.0px; }
+            25.0% { left: 130.0px; }
+            27.059% { left: 130.0px; }
+            29.118% { left: 130.0px; }
+            31.176% { left: 130.0px; }
+            33.235% { left: 130.0px; }
+            35.294% { left: 130.0px; }
+            37.353% { left: 130.0px; }
+            39.412% { left: 130.0px; }
+            41.471% { left: 130.0px; }
+            43.529% { left: 130.0px; }
+            45.588% { left: 130.0px; }
+            50.0% { left: 130.0px; }
+            52.059% { left: 129.7px; }
+            54.118% { left: 128.7px; }
+            56.176% { left: 125.6px; }
+            58.235% { left: 119.0px; }
+            60.294% { left: 75.0px; }
+            62.353% { left: 31.0px; }
+            64.412% { left: 24.4px; }
+            66.471% { left: 21.3px; }
+            68.529% { left: 20.3px; }
+            70.588% { left: 20.0px; }
+            75.0% { left: 20.0px; }
+            77.059% { left: 20.0px; }
+            79.118% { left: 20.0px; }
+            81.176% { left: 20.0px; }
+            83.235% { left: 20.0px; }
+            85.294% { left: 20.0px; }
+            87.353% { left: 20.0px; }
+            89.412% { left: 20.0px; }
+            91.471% { left: 20.0px; }
+            93.529% { left: 20.0px; }
+            95.588% { left: 20.0px; }
+            100.0% { left: 20.0px; }
+        }
+        @keyframes exploreTop {
+            0.0% { top: 20.0px; }
+            2.059% { top: 20.0px; }
+            4.118% { top: 20.0px; }
+            6.176% { top: 20.0px; }
+            8.235% { top: 20.0px; }
+            10.294% { top: 20.0px; }
+            12.353% { top: 20.0px; }
+            14.412% { top: 20.0px; }
+            16.471% { top: 20.0px; }
+            18.529% { top: 20.0px; }
+            20.588% { top: 20.0px; }
+            25.0% { top: 20.0px; }
+            27.059% { top: 20.3px; }
+            29.118% { top: 21.3px; }
+            31.176% { top: 24.4px; }
+            33.235% { top: 31.0px; }
+            35.294% { top: 75.0px; }
+            37.353% { top: 119.0px; }
+            39.412% { top: 125.6px; }
+            41.471% { top: 128.7px; }
+            43.529% { top: 129.7px; }
+            45.588% { top: 130.0px; }
+            50.0% { top: 130.0px; }
+            52.059% { top: 130.0px; }
+            54.118% { top: 130.0px; }
+            56.176% { top: 130.0px; }
+            58.235% { top: 130.0px; }
+            60.294% { top: 130.0px; }
+            62.353% { top: 130.0px; }
+            64.412% { top: 130.0px; }
+            66.471% { top: 130.0px; }
+            68.529% { top: 130.0px; }
+            70.588% { top: 130.0px; }
+            75.0% { top: 130.0px; }
+            77.059% { top: 129.7px; }
+            79.118% { top: 128.7px; }
+            81.176% { top: 125.6px; }
+            83.235% { top: 119.0px; }
+            85.294% { top: 75.0px; }
+            87.353% { top: 31.0px; }
+            89.412% { top: 24.4px; }
+            91.471% { top: 21.3px; }
+            93.529% { top: 20.3px; }
+            95.588% { top: 20.0px; }
+            100.0% { top: 20.0px; }
+        }
+        @keyframes exploreColor {
+            0% { background: #E8622A; }
+            9.471% { background: #E8622A; }
+            10.294% { background: #ffffff; }
+            34.471% { background: #ffffff; }
+            35.294% { background: #E8622A; }
+            59.471% { background: #E8622A; }
+            60.294% { background: #ffffff; }
+            84.471% { background: #ffffff; }
+            85.294% { background: #E8622A; }
+            100% { background: #E8622A; }
+        }
+            9.471% { background: #1A0F0A; }
+            10.294% { background: #ffffff; }
+            34.471% { background: #ffffff; }
+            35.294% { background: #E8622A; }
+            59.471% { background: #E8622A; }
+            60.294% { background: #ffffff; }
+            84.471% { background: #ffffff; }
+            85.294% { background: #1A0F0A; }
+            100% { background: #1A0F0A; }
+        }
+        @keyframes exploreSpin {
+            0.0% { transform: rotate(0deg); }
+            2.059% { transform: rotate(1.1deg); }
+            4.118% { transform: rotate(4.3deg); }
+            6.176% { transform: rotate(14.4deg); }
+            8.235% { transform: rotate(36.0deg); }
+            10.294% { transform: rotate(180.0deg); }
+            12.353% { transform: rotate(324.0deg); }
+            14.412% { transform: rotate(345.6deg); }
+            16.471% { transform: rotate(355.7deg); }
+            18.529% { transform: rotate(358.9deg); }
+            20.588% { transform: rotate(360.0deg); }
+            25.0% { transform: rotate(360.0deg); }
+            27.059% { transform: rotate(361.1deg); }
+            29.118% { transform: rotate(364.3deg); }
+            31.176% { transform: rotate(374.4deg); }
+            33.235% { transform: rotate(396.0deg); }
+            35.294% { transform: rotate(540.0deg); }
+            37.353% { transform: rotate(684.0deg); }
+            39.412% { transform: rotate(705.6deg); }
+            41.471% { transform: rotate(715.7deg); }
+            43.529% { transform: rotate(718.9deg); }
+            45.588% { transform: rotate(720.0deg); }
+            50.0% { transform: rotate(720.0deg); }
+            52.059% { transform: rotate(721.1deg); }
+            54.118% { transform: rotate(724.3deg); }
+            56.176% { transform: rotate(734.4deg); }
+            58.235% { transform: rotate(756.0deg); }
+            60.294% { transform: rotate(900.0deg); }
+            62.353% { transform: rotate(1044.0deg); }
+            64.412% { transform: rotate(1065.6deg); }
+            66.471% { transform: rotate(1075.7deg); }
+            68.529% { transform: rotate(1078.9deg); }
+            70.588% { transform: rotate(1080.0deg); }
+            75.0% { transform: rotate(1080.0deg); }
+            77.059% { transform: rotate(1081.1deg); }
+            79.118% { transform: rotate(1084.3deg); }
+            81.176% { transform: rotate(1094.4deg); }
+            83.235% { transform: rotate(1116.0deg); }
+            85.294% { transform: rotate(1260.0deg); }
+            87.353% { transform: rotate(1404.0deg); }
+            89.412% { transform: rotate(1425.6deg); }
+            91.471% { transform: rotate(1435.7deg); }
+            93.529% { transform: rotate(1438.9deg); }
+            95.588% { transform: rotate(1440.0deg); }
+            100.0% { transform: rotate(1440deg); }
+        }
+
+        #v-explore.active .shifter {
+            animation:
+                exploreLeft  6.8s linear 1 forwards,
+                exploreTop   6.8s linear 1 forwards,
+                exploreSpin  6.8s linear 1 forwards,
+                exploreColor 6.8s linear 1 forwards;
+        }
+        .desc-p { color: rgba(240,230,220,0.45); font-size: 0.85rem; font-weight: 300; text-align: center; max-width: 420px; line-height: 1.7; }
+
+        .replay-btn {
+            margin-top: 16px;
+            background: none;
+            border: none;
+            color: rgba(240,230,220,0.2);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 4px 0;
+            transition: color 0.2s;
+        }
+        .replay-btn:hover { color: var(--accent); }
+
+        /* ==================
+           FIND A TUTOR PAGE
+        ================== */
+        .tutor-page { padding-top: 70px; }
+        .tutor-header { padding: 80px 10% 60px; border-bottom: 1px solid var(--dim); }
+        .tutor-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 6vw, 6rem); font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; color: var(--ink); margin: 0 0 20px 0; }
+        .tutor-header h1 em { font-style: italic; color: var(--rust); }
+        .tutor-header p { font-size: 0.85rem; color: var(--mid); line-height: 1.7; max-width: 480px; }
+
+        .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--dim); }
+        .category-card { background: var(--cream); padding: 48px 40px 40px; cursor: pointer; position: relative; overflow: hidden; transition: background 0.35s; text-decoration: none; display: block; }
+        .category-card:hover { background: var(--parchment); }
+        .category-card:hover .card-arrow { transform: rotate(45deg); background: var(--accent); border-color: var(--accent); }
+        .card-art { width: 100%; height: 200px; position: relative; margin-bottom: 32px; }
+        .art-shape { position: absolute; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); }
+
+        .stem .art-shape.a { width: 80px; height: 80px; top: 20px; left: 20px; border: 2px solid var(--ink); }
+        .stem .art-shape.b { width: 80px; height: 80px; top: 20px; left: 120px; border: 2px solid var(--ink); background: var(--accent); }
+        .stem .art-shape.c { width: 80px; height: 80px; top: 20px; left: 220px; border: 2px solid var(--ink); }
+        .stem .art-shape.d { width: 180px; height: 2px; top: 140px; left: 20px; background: var(--ink); }
+        .stem .art-shape.e { width: 2px; height: 60px; top: 100px; left: 160px; background: var(--rust); }
+
+        .music .art-shape.a { width: 180px; height: 180px; top: 10px; left: 40px; border-radius: 50%; border: 2px solid var(--ink); }
+        .music .art-shape.b { width: 100px; height: 100px; top: 50px; left: 80px; border-radius: 50%; background: var(--rust); }
+        .music .art-shape.c { width: 40px; height: 40px; top: 80px; left: 110px; border-radius: 50%; background: var(--accent); z-index: 2; }
+        .music .art-shape.d { width: 120px; height: 2px; top: 160px; left: 180px; background: var(--ink); transform: rotate(-15deg); }
+        .music .art-shape.e { width: 60px; height: 2px; top: 145px; left: 220px; background: var(--rust); transform: rotate(-15deg); }
+
+        .misc .art-shape.a { width: 60px; height: 60px; top: 30px; left: 30px; transform: rotate(30deg); background: var(--rust); }
+        .misc .art-shape.b { width: 90px; height: 90px; top: 80px; left: 140px; border-radius: 50%; border: 2px solid var(--ink); }
+        .misc .art-shape.c { width: 50px; height: 50px; top: 20px; left: 220px; background: var(--accent); border-radius: 50%; }
+        .misc .art-shape.d { width: 100px; height: 2px; top: 150px; left: 60px; background: var(--ink); transform: rotate(8deg); }
+        .misc .art-shape.e { width: 40px; height: 40px; top: 110px; left: 260px; transform: rotate(45deg); border: 2px solid var(--rust); }
+
+        .art .art-shape.a { width: 160px; height: 160px; top: 20px; left: 20px; border-radius: 50% 30% 50% 20%; background: var(--rust); opacity: 0.7; }
+        .art .art-shape.b { width: 120px; height: 120px; top: 50px; left: 100px; border-radius: 20% 50% 30% 50%; background: var(--accent); opacity: 0.85; }
+        .art .art-shape.c { width: 80px; height: 80px; top: 80px; left: 200px; border-radius: 50%; border: 3px solid var(--ink); }
+        .art .art-shape.d { width: 200px; height: 3px; top: 170px; left: 20px; background: var(--ink); }
+
+        .ela .art-shape.a { width: 240px; height: 3px; top: 40px; left: 20px; background: var(--ink); }
+        .ela .art-shape.b { width: 160px; height: 3px; top: 70px; left: 20px; background: var(--ink); }
+        .ela .art-shape.c { width: 200px; height: 3px; top: 100px; left: 20px; background: var(--ink); }
+        .ela .art-shape.d { width: 100px; height: 3px; top: 130px; left: 20px; background: var(--rust); }
+        .ela .art-shape.e { width: 50px; height: 50px; top: 30px; right: 30px; background: var(--accent); border-radius: 2px; }
+
+        .category-card:hover.stem .art-shape.b { transform: translateY(-8px); }
+        .category-card:hover.music .art-shape.b { transform: scale(1.1); }
+        .category-card:hover.art .art-shape.a { transform: rotate(10deg) scale(1.05); }
+        .category-card:hover.ela .art-shape.e { transform: rotate(15deg); }
+        .category-card:hover.misc .art-shape.a { transform: rotate(50deg); }
+
+        .card-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); margin-bottom: 12px; }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; line-height: 0.9; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 16px; }
+        .card-title em { font-style: italic; color: var(--rust); }
+        .card-desc { font-size: 0.75rem; line-height: 1.7; color: var(--mid); max-width: 300px; }
+        .card-arrow { position: absolute; bottom: 28px; right: 28px; width: 32px; height: 32px; border: 1px solid var(--dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--ink); transition: all 0.3s; }
+        .card-count { position: absolute; top: 28px; right: 28px; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--mid); }
+
+        .back-btn { display: inline-flex; align-items: center; gap: 10px; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); cursor: pointer; border: none; background: none; padding: 0; margin-bottom: 32px; transition: color 0.2s; font-family: 'DM Mono', monospace; }
+        .back-btn:hover { color: var(--ink); }
+        .back-btn::before { content: '←'; font-size: 1rem; }
+
+        /* ==================
+           REGISTER PAGE
+        ================== */
+        .register-page { padding-top: 70px; min-height: 100vh; }
+        .register-page.active { display: block; }
+
+        .reg-choice {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 70px);
+        }
+
+        .reg-choice-panel {
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reg-choice-panel.student-panel { background: var(--parchment); color: var(--ink); }
+        .reg-choice-panel.tutor-panel { background: var(--brown); color: var(--parchment); }
+
+        .reg-choice-panel.student-panel:hover { background: #EDE3D8; }
+        .reg-choice-panel.tutor-panel:hover { background: #120A04; }
+        .tutor-panel:hover .reg-headline { color: var(--parchment) !important; }
+        .tutor-panel:hover .reg-headline em { color: var(--accent) !important; }
+        .tutor-panel:hover .reg-role-label { color: rgba(240,230,220,0.4) !important; }
+        .tutor-panel:hover p { color: rgba(240,230,220,0.45) !important; }
+
+        /* accent edge line — slides in from left on tutor hover */
+        .reg-choice-panel.tutor-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 2px;
+            height: 100%;
+            background: var(--accent);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reg-choice-panel.tutor-panel:hover::before { transform: scaleY(1); }
+
+        .reg-headline {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: clamp(2.4rem, 3.5vw, 3.8rem);
+            line-height: 0.88;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        .choice-arrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-top: 32px;
+            transition: gap 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            opacity: 0.5;
+        }
+        .reg-choice-panel:hover .choice-arrow { gap: 18px; opacity: 1; }
+        .student-panel .choice-arrow { color: var(--ink); }
+        .tutor-panel .choice-arrow { color: var(--accent); }
+        .choice-arrow::after { content: '→'; font-size: 1rem; }
+
+        /* FORM SCREENS — hidden until choice made */
+        .reg-form-screen {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 70px);
+        }
+
+        .reg-form-screen.visible { display: grid; }
+
+        /* Two halves split horizontally */
+        .reg-split {
+            display: contents;
+        }
+
+        /* STUDENT side — light parchment, open, receptive */
+        .reg-student {
+            background: var(--parchment);
+            padding: 70px 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid rgba(26,15,10,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* TUTOR side — deep brown, authoritative, structured */
+        .reg-tutor {
+            background: var(--brown);
+            padding: 70px 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Abstract art containers */
+        .reg-art {
+            width: 100%;
+            height: 220px;
+            position: relative;
+            margin-bottom: 48px;
+            flex-shrink: 0;
+        }
+
+        .ra { position: absolute; }
+
+        /* STUDENT ART — concentric circles sharing a common bottom tangent, pure vertical */
+        .student-art .ra {
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .student-art .ra.c1 {
+            width: 44px; height: 44px;
+            bottom: 20px;
+            background: var(--brown);
+            opacity: 1;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .student-art .ra.c2 {
+            width: 44px; height: 44px;
+            bottom: 20px;
+            background: var(--brown);
+            opacity: 0;
+            transition: width 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease;
+        }
+        .student-art .ra.c3 {
+            width: 44px; height: 44px;
+            bottom: 20px;
+            background: var(--brown);
+            opacity: 0;
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease;
+        }
+        .student-art .ra.c4 {
+            width: 44px; height: 44px;
+            bottom: 20px;
+            background: var(--brown);
+            opacity: 0;
+            transition: width 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.2s ease;
+        }
+
+        /* hover — bloom upward, staggered */
+        .student-panel:hover .student-art .ra.c1,
+        .reg-student:hover .student-art .ra.c1 { width: 60px; height: 60px; }
+        .student-panel:hover .student-art .ra.c2,
+        .reg-student:hover .student-art .ra.c2 { width: 110px; height: 110px; opacity: 1; transition-delay: 0.1s; }
+        .student-panel:hover .student-art .ra.c3,
+        .reg-student:hover .student-art .ra.c3 { width: 170px; height: 170px; opacity: 1; transition-delay: 0.2s; }
+        .student-panel:hover .student-art .ra.c4,
+        .reg-student:hover .student-art .ra.c4 { width: 240px; height: 240px; opacity: 1; transition-delay: 0.3s; }
+
+        .student-art .ra.origin {
+            width: 8px; height: 8px;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--rust);
+            z-index: 11;
+            transition: background 0.5s ease, transform 0.6s cubic-bezier(0.16,1,0.3,1);
+        }
+        .student-panel:hover .student-art .ra.origin,
+        .reg-student:hover .student-art .ra.origin {
+            background: var(--accent);
+            transform: translateX(-50%) scale(1.5);
+        }
+
+        /* STUDENT HOVER — circles breathe outward */
+        .student-panel:hover .student-art .ra.c1 { width: 54px; height: 54px; }
+        .student-panel:hover .student-art .ra.c2 { width: 114px; height: 114px; }
+        .student-panel:hover .student-art .ra.c3 { width: 184px; height: 184px; }
+        .student-panel:hover .student-art .ra.c4 { width: 260px; height: 260px; opacity: 0.08; }
+        .student-panel:hover .student-art .ra.origin { background: var(--accent); transform: translateY(-50%) scale(1.5); }
+
+        /* TUTOR ART — Wacom tablet, exact match to landing #v-teach */
+        .tutor-art .ra.tablet {
+            width: 280px; height: 180px;
+            top: 20px; left: 30px;
+            border-radius: 4px;
+            border: 3px solid var(--parchment);
+            transition: border-color 0.6s ease, box-shadow 0.6s ease;
+        }
+        .tutor-art .ra.stroke {
+            width: 160px; height: 4px;
+            top: 90px; left: 200px;
+            transform: rotate(-25deg);
+            background: var(--accent);
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tutor-art .ra.stylus {
+            width: 4px; height: 100px;
+            top: 10px; left: 308px;
+            background: rgba(240,230,220,0.7);
+            border-radius: 2px 2px 0 0;
+            transform: rotate(-25deg);
+            transform-origin: bottom center;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+        }
+        .tutor-art .ra.nib {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            top: 86px; left: 193px;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
+        }
+
+        /* TUTOR HOVER — stylus lifts, stroke extends, nib glows */
+        .tutor-panel:hover .tutor-art .ra.tablet { border-color: rgba(240,230,220,0.6); }
+        .tutor-panel:hover .tutor-art .ra.stroke { width: 185px; }
+        .tutor-panel:hover .tutor-art .ra.stylus { transform: rotate(-25deg) translateY(-7px); }
+        .tutor-panel:hover .tutor-art .ra.nib {
+            transform: translateX(-3px) translateY(-3px);
+            box-shadow: 0 0 10px rgba(200,240,0,0.55);
+        }
+
+        /* SCATTER — tutor art on mouseleave */
+        .tutor-art.scatter .ra.tablet { opacity: 0.2; transform: translateX(-16px); transition: all 0.7s cubic-bezier(0.23,1,0.32,1); }
+        .tutor-art.scatter .ra.stroke { width: 0; opacity: 0; }
+        .tutor-art.scatter .ra.stylus { transform: rotate(-25deg) translateY(-55px); opacity: 0; }
+        .tutor-art.scatter .ra.nib { transform: translate(24px, -18px); opacity: 0; }
+
+        /* Section labels */
+        .reg-role-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .reg-student .reg-role-label { color: var(--mid); }
+        .reg-tutor .reg-role-label { color: rgba(240,230,220,0.4); }
+
+        .reg-student .reg-headline { color: var(--ink); }
+        .reg-tutor .reg-headline { color: var(--parchment); }
+
+        .reg-headline em { font-style: italic; }
+        .reg-student .reg-headline em { color: var(--rust); }
+        .reg-tutor .reg-headline em { color: var(--accent); }
+
+        .reg-desc {
+            font-size: 0.78rem;
+            line-height: 1.75;
+            margin-bottom: 48px;
+        }
+        .reg-student .reg-desc { color: var(--mid); max-width: 340px; }
+        .reg-tutor .reg-desc { color: rgba(240,230,220,0.45); max-width: 340px; }
+
+        /* FORMS */
+        .reg-form { display: flex; flex-direction: column; gap: 14px; }
+
+        .field-group { display: flex; flex-direction: column; gap: 6px; }
+
+        .field-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .reg-student .field-label { color: var(--mid); }
+        .reg-tutor .field-label { color: rgba(240,230,220,0.4); }
+
+        .field-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.82rem;
+            border: none;
+            outline: none;
+            transition: all 0.2s;
+            border-radius: 0;
+            -webkit-appearance: none;
+        }
+
+        /* Student input — light bg, ink border on focus */
+        .reg-student .field-input {
+            background: rgba(26,15,10,0.05);
+            color: var(--ink);
+            border-bottom: 1px solid rgba(26,15,10,0.15);
+        }
+        .reg-student .field-input:focus {
+            background: rgba(26,15,10,0.08);
+            border-bottom-color: var(--ink);
+        }
+        .reg-student .field-input::placeholder { color: rgba(26,15,10,0.3); }
+
+        /* Tutor input — dark bg, parchment accent on focus */
+        .reg-tutor .field-input {
+            background: rgba(240,230,220,0.06);
+            color: var(--parchment);
+            border-bottom: 1px solid rgba(240,230,220,0.12);
+        }
+        .reg-tutor .field-input:focus {
+            background: rgba(240,230,220,0.1);
+            border-bottom-color: rgba(240,230,220,0.5);
+        }
+        .reg-tutor .field-input::placeholder { color: rgba(240,230,220,0.2); }
+
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+        /* Submit buttons */
+        .reg-btn {
+            margin-top: 8px;
+            padding: 16px 28px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            width: fit-content;
+            transition: gap 0.3s, background 0.2s, color 0.2s;
+        }
+        .reg-btn::after { content: '→'; font-size: 0.95rem; }
+        .reg-btn:hover { gap: 22px; }
+
+        .reg-student .reg-btn { background: var(--ink); color: var(--accent); }
+        .reg-student .reg-btn:hover { background: var(--rust); color: var(--parchment); }
+
+        .reg-tutor .reg-btn { background: var(--accent); color: var(--ink); }
+        .reg-tutor .reg-btn:hover { background: var(--parchment); color: var(--ink); }
+
+        .reg-switch {
+            font-size: 0.68rem;
+            letter-spacing: 0.06em;
+            margin-top: 20px;
+        }
+        .reg-student .reg-switch { color: var(--mid); }
+        .reg-tutor .reg-switch { color: rgba(240,230,220,0.35); }
+        .reg-switch a { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+        .reg-student .reg-switch a { color: var(--rust); }
+        .reg-tutor .reg-switch a { color: var(--accent); }
+
+        /* Divider label in the middle */
+        .reg-divider {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            background: var(--cream);
+            border: 1px solid rgba(26,15,10,0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            letter-spacing: 0.05em;
+            color: var(--mid);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="toolbar">
+        <a class="logo" onclick="showPage('home')">seek2lrn&reg;</a>
+        <nav class="nav-links">
+            <a onclick="showPage('tutors')">find a tutor</a>
+            <a onclick="showPage('register')" class="cta">register</a>
+        </nav>
+    </header>
+
+    <!-- ===== HOME PAGE ===== -->
+    <div id="page-home" class="page active">
+        <section class="hero" style="
+            height:100vh; background:var(--cream);
+            display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            padding:80px 20px 40px; gap:0;
+            border-bottom:1px solid var(--dim); position:relative;
+        ">
+            <!-- logo -->
+            <div style="font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px;">seek2lrn&reg;</div>
+
+            <!-- globe + knowledge spirograph side by side -->
+            <div style="position:relative;display:flex;gap:40px;align-items:flex-start;justify-content:center;">
+            <!-- hover card -->
+            <div id="atlas-card" style="
+                position:absolute;left:-290px;top:60px;
+                width:250px;padding:22px;
+                background:#E8622A;color:#1E1208;
+                font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;
+                opacity:0;pointer-events:auto;
+                transition:opacity 0.4s ease;
+                z-index:10;
+            ">
+                <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;">The Atlas</div>
+                Seek2lrn lets you pick any teacher, from anywhere in the world, curated for you.<br><br>
+                Shapes in this globe represent tutors from various parts of the world.<br><br>
+                Click on one of them to use their knowledge in knowledge spirograph.
+                <div style="margin-top:16px;">
+                    <button onclick="showPage('tutors')" style="
+                        background:#1E1208;color:#E8622A;
+                        border:none;font-family:'DM Mono',monospace;
+                        font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+                        padding:10px 18px;cursor:pointer;width:100%;
+                    ">Find a tutor →</button>
+                </div>
+            </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">atlas</div>
+                    <div style="font-size:9px;color:var(--mid);opacity:0.6;margin-top:2px;font-family:'DM Mono',monospace;">(click ↓ any shape to add to spirograph)</div>
+                    <div style="position:relative;width:380px;height:380px;">
+                    <canvas id="globe-c" width="380" height="380" style="position:absolute;top:0;left:0;cursor:crosshair;"></canvas>
+                    <canvas id="globe-hover-overlay" width="710" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
+                </div>
+                <button id="globe-stop" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 12px;cursor:pointer;margin-top:6px;">stop rotation</button>
+                </div>
+
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">knowledge spirograph</div>
+                    <div style="display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);margin-top:3px;">
+                        <span style="opacity:0.6;white-space:nowrap;">tutor name:</span>
+                        <div id="recent-cities" style="display:flex;gap:12px;align-items:center;flex-wrap:nowrap;overflow:hidden;">
+                            <span style="opacity:0.4;font-size:10px;">no tutors yet</span>
+                        </div>
+                    </div>
+                    <div style="position:relative;width:380px;height:380px;">
+                    <canvas id="spiro-c" width="380" height="380" style="position:absolute;top:0;left:0;"></canvas>
+                    <canvas id="spiro-hover-overlay" width="710" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
+                </div>
+                <!-- spiro hover card — right side -->
+                <div id="spiro-card" style="
+                    position:absolute;right:-290px;top:60px;
+                    width:250px;padding:22px;
+                    background:#1E1208;color:#F0E6DC;
+                    font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;
+                    opacity:0;pointer-events:auto;
+                    transition:opacity 0.4s ease;
+                    z-index:10;
+                ">
+                    <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;color:#F0E6DC;">Knowledge Spirograph</div>
+                    At seek2lrn, each individual's learning journey, like a piece of art, is unique.<br><br>
+                    You'll have teachers from all around the world, vast array of subjects from the essentials to the eccentric, and all modern e-learning tools at your disposal. You are in complete control of your journey.<br><br>
+                    Carve out your path.
+                    <div style="margin-top:16px;">
+                        <a onclick="showPage('register');setTimeout(()=>showRegForm('student'),100);" style="
+                            display:block;background:#E8622A;color:#1E1208;
+                            font-family:'DM Mono',monospace;font-size:10px;
+                            letter-spacing:0.1em;text-transform:uppercase;
+                            padding:10px 18px;cursor:pointer;text-align:center;
+                            text-decoration:none;
+                        ">Register as a student →</a>
+                    </div>
+                </div>
+                    <div style="display:flex;gap:10px;">
+                        <button id="spiro-pause" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">pause</button>
+                        <button id="spiro-clear" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">clear</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- bottom text -->
+            <div style="margin-top:28px;text-align:center;">
+                <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;line-height:0.9;letter-spacing:-0.03em;color:var(--ink);">Global talent.</div>
+                <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;font-style:italic;line-height:0.9;letter-spacing:-0.03em;color:var(--rust);">Local impact.</div>
+            </div>
+        </section>
+
+        <section class="interactive-section" id="interact">
+            <div class="sidebar">
+                <div class="m-item active" data-target="v-learn">learn</div>
+                <div class="m-item" data-target="v-connect">connect</div>
+                <div class="m-item" data-target="v-teach">teach</div>
+                <div class="m-item" data-target="v-explore">explore</div>
+            </div>
+            <div class="display-area">
+                <div class="content-wrap active" id="v-learn">
+                    <div class="box"><div class="s s3"></div><div class="s s2"></div><div class="s s1"></div></div>
+                    <button class="replay-btn" onclick="replaySection('v-learn')">replay ↺</button>
+                    <p class="desc-p">Students choose educators who fit how they think, not the other way around. The platform tracks progress and ensures every learner gets the consistent, personalised feedback they deserve.</p>
+                </div>
+                <div class="content-wrap" id="v-connect">
+                    <div class="box">
+                        <div class="s s1"></div>
+                        <div class="s s2"></div>
+                        <div class="s s3"></div>
+                    </div>
+                    <button class="replay-btn" onclick="replaySection('v-connect')">replay ↺</button>
+                    <p class="desc-p">We're a decentralized marketplace, not a middleman. We connect curious learners with vetted, expert educators — and then get out of the way. We just build the infrastructure that makes it possible.</p>
+                </div>
+                                                                                                <div class="content-wrap" id="v-teach">
+                    <div class="teach-stage">
+                        <div class="root" id="rubik-root"></div>
+                    </div>
+                                        <button class="replay-btn" onclick="replaySection('v-teach')">replay ↺</button>
+                    <p class="desc-p">Teach anything. Reach anyone. Pro-grade tools — live video, virtual whiteboards, custom assessments — built for serious educators.</p>
+                </div>
+                <div class="content-wrap" id="v-explore">
+                    <div class="explore-stage">
+                        <div class="explore-rect q1"></div><!-- top-left:     white      -->
+                        <div class="explore-rect q2"></div><!-- top-right:    orange     -->
+                        <div class="explore-rect q3"></div><!-- bottom-left:  orange     -->
+                        <div class="explore-rect q4"></div><!-- bottom-right: dark brown -->
+                        <div class="shifter"></div>
+                    </div>
+                    <button class="replay-btn" onclick="replaySection('v-explore')">replay ↺</button>
+                    <p class="desc-p">An expansive dashboard of subjects — from quantum physics to jazz guitar.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== FIND A TUTOR PAGE ===== -->
+    <div id="page-tutors" class="page tutor-page">
+        <div class="tutor-header">
+            <button class="back-btn" onclick="showPage('home')">Back to home</button>
+            <h1>Find a<br><em>tutor.</em></h1>
+            <p>Browse by subject area. Every tutor is vetted, reviewed, and ready to teach — wherever you are in the world.</p>
+        </div>
+        <div class="category-grid">
+            <a class="category-card stem" href="#">
+                <span class="card-count">2,140+ tutors</span>
+                <div class="card-art"><div class="art-shape a"></div><div class="art-shape b"></div><div class="art-shape c"></div><div class="art-shape d"></div><div class="art-shape e"></div></div>
+                <div class="card-label">Category 01</div>
+                <div class="card-title">STEM<br><em>Teachers</em></div>
+                <p class="card-desc">Mathematics, physics, chemistry, biology, engineering and coding. Rigorous, specialist instruction.</p>
+                <div class="card-arrow">↗</div>
+            </a>
+            <a class="category-card music" href="#">
+                <span class="card-count">980+ tutors</span>
+                <div class="card-art"><div class="art-shape a"></div><div class="art-shape b"></div><div class="art-shape c"></div><div class="art-shape d"></div><div class="art-shape e"></div></div>
+                <div class="card-label">Category 02</div>
+                <div class="card-title">Music<br><em>Teachers</em></div>
+                <p class="card-desc">Guitar, piano, voice, theory, composition. From beginner fundamentals to conservatory-level preparation.</p>
+                <div class="card-arrow">↗</div>
+            </a>
+            <a class="category-card misc" href="#">
+                <span class="card-count">1,200+ tutors</span>
+                <div class="card-art"><div class="art-shape a"></div><div class="art-shape b"></div><div class="art-shape c"></div><div class="art-shape d"></div><div class="art-shape e"></div></div>
+                <div class="card-label">Category 03</div>
+                <div class="card-title">Miscellaneous<br><em>Subjects</em></div>
+                <p class="card-desc">Chess, philosophy, film theory, cooking, public speaking. If it can be taught, it's here.</p>
+                <div class="card-arrow">↗</div>
+            </a>
+            <a class="category-card art" href="#">
+                <span class="card-count">710+ tutors</span>
+                <div class="card-art"><div class="art-shape a"></div><div class="art-shape b"></div><div class="art-shape c"></div><div class="art-shape d"></div></div>
+                <div class="card-label">Category 04</div>
+                <div class="card-title">Art<br><em>Teachers</em></div>
+                <p class="card-desc">Drawing, painting, sculpture, digital art, graphic design. Taught by practicing artists and designers.</p>
+                <div class="card-arrow">↗</div>
+            </a>
+            <a class="category-card ela" href="#">
+                <span class="card-count">1,850+ tutors</span>
+                <div class="card-art"><div class="art-shape a"></div><div class="art-shape b"></div><div class="art-shape c"></div><div class="art-shape d"></div><div class="art-shape e"></div></div>
+                <div class="card-label">Category 05</div>
+                <div class="card-title">ELA<br><em>Teachers</em></div>
+                <p class="card-desc">Reading, writing, literature, essay craft, test prep. Specialists in language and analytical thinking.</p>
+                <div class="card-arrow">↗</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- ===== REGISTER PAGE ===== -->
+    <div id="page-register" class="page register-page">
+
+        <!-- STEP 1: Choice screen -->
+        <div class="reg-choice" id="reg-choice">
+
+            <!-- STUDENT CHOICE -->
+            <div class="reg-choice-panel student-panel" onclick="showRegForm('student')">
+                <div class="panel-inner">
+                    <div class="reg-art student-art">
+                        <div class="ra c4"></div>
+                        <div class="ra c3"></div>
+                        <div class="ra c2"></div>
+                        <div class="ra c1"></div>
+                        <div class="ra origin"></div>
+                    </div>
+                    <div class="reg-role-label" style="color:var(--mid);">I want to learn</div>
+                    <h2 class="reg-headline" style="color:var(--ink);">Register as<br>a <em style="font-style:italic;color:var(--rust);">Student.</em></h2>
+                    <p style="font-size:0.78rem;line-height:1.75;color:var(--mid);max-width:320px;margin:12px 0 0;">Find your tutor, set your pace, and learn anything — from anywhere in the world.</p>
+                    <div class="choice-arrow">Get started</div>
+                </div>
+            </div>
+
+            <!-- TUTOR CHOICE -->
+            <div class="reg-choice-panel tutor-panel" onclick="showRegForm('tutor')">
+                <div class="panel-inner">
+                    <div class="reg-art tutor-art" id="choice-tutor-art">
+                        <div class="ra tablet"></div>
+                        <div class="ra stroke"></div>
+                        <div class="ra stylus"></div>
+                        <div class="ra nib"></div>
+                    </div>
+                    <div class="reg-role-label" style="color:rgba(240,230,220,0.4);">I want to teach</div>
+                    <h2 class="reg-headline" style="color:var(--parchment);">Register as<br>a <em style="font-style:italic;color:var(--accent);">Tutor.</em></h2>
+                    <p style="font-size:0.78rem;line-height:1.75;color:rgba(240,230,220,0.45);max-width:320px;margin:12px 0 0;">Share your expertise with students worldwide. Set your own rates, hours, and subjects.</p>
+                    <div class="choice-arrow">Get started</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- STEP 2: Form screen (hidden until choice made) -->
+        <div class="reg-form-screen" id="reg-form-screen">
+
+            <!-- STUDENT FORM -->
+            <div class="reg-student" id="form-student" style="display:none;">
+                <div>
+                    <button class="back-btn" onclick="backToChoice()">Choose differently</button>
+                    <div class="reg-art student-art">
+                        <div class="ra c4"></div>
+                        <div class="ra c3"></div>
+                        <div class="ra c2"></div>
+                        <div class="ra c1"></div>
+                        <div class="ra origin"></div>
+                    </div>
+                    <div class="reg-role-label">I want to learn</div>
+                    <h2 class="reg-headline">Register as<br>a <em>Student.</em></h2>
+                    <p class="reg-desc">Find your tutor, set your pace, and learn anything — from anywhere in the world.</p>
+                </div>
+                <div>
+                    <form class="reg-form" onsubmit="return false;">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">First name</label>
+                                <input class="field-input" type="text" placeholder="Ada">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Last name</label>
+                                <input class="field-input" type="text" placeholder="Lovelace">
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Email address</label>
+                            <input class="field-input" type="email" placeholder="ada@example.com">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Password</label>
+                            <input class="field-input" type="password" placeholder="············">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">What do you want to learn?</label>
+                            <input class="field-input" type="text" placeholder="e.g. jazz piano, calculus, Mandarin…">
+                        </div>
+                        <button class="reg-btn">Create student account</button>
+                        <p class="reg-switch">Already have an account? <a onclick="showPage('home')">Log in</a></p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TUTOR FORM -->
+            <div class="reg-tutor" id="form-tutor" style="display:none;">
+                <div>
+                    <button class="back-btn" style="color:rgba(240,230,220,0.35);" onclick="backToChoice()">Choose differently</button>
+                    <div class="reg-art tutor-art" id="form-tutor-art">
+                        <div class="ra tablet"></div>
+                        <div class="ra stroke"></div>
+                        <div class="ra stylus"></div>
+                        <div class="ra nib"></div>
+                    </div>
+                    <div class="reg-role-label">I want to teach</div>
+                    <h2 class="reg-headline">Register as<br>a <em>Tutor.</em></h2>
+                    <p class="reg-desc">Share your expertise with students worldwide. Set your own rates, hours, and subjects.</p>
+                </div>
+                <div>
+                    <form class="reg-form" onsubmit="return false;">
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label">First name</label>
+                                <input class="field-input" type="text" placeholder="Richard">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label">Last name</label>
+                                <input class="field-input" type="text" placeholder="Feynman">
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Email address</label>
+                            <input class="field-input" type="email" placeholder="richard@example.com">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Password</label>
+                            <input class="field-input" type="password" placeholder="············">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Your subject expertise</label>
+                            <input class="field-input" type="text" placeholder="e.g. quantum physics, oil painting…">
+                        </div>
+                        <button class="reg-btn">Create tutor account</button>
+                        <p class="reg-switch">Already have an account? <a onclick="showPage('home')">Log in</a></p>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + id).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Reset register to choice screen when navigating to it
+            if (id === 'register') backToChoice();
+        }
+
+        function showRegForm(role) {
+            document.getElementById('reg-choice').style.display = 'none';
+            const screen = document.getElementById('reg-form-screen');
+            screen.classList.add('visible');
+            // Show only the chosen side, but keep the other as a blank filler
+            const student = document.getElementById('form-student');
+            const tutor = document.getElementById('form-tutor');
+            if (role === 'student') {
+                student.style.display = 'flex';
+                tutor.style.display = 'flex';
+                tutor.style.opacity = '0.3';
+                tutor.style.pointerEvents = 'none';
+            } else {
+                tutor.style.display = 'flex';
+                student.style.display = 'flex';
+                student.style.opacity = '0.3';
+                student.style.pointerEvents = 'none';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToChoice() {
+            document.getElementById('reg-choice').style.display = 'grid';
+            const screen = document.getElementById('reg-form-screen');
+            screen.classList.remove('visible');
+            const student = document.getElementById('form-student');
+            const tutor = document.getElementById('form-tutor');
+            student.style.display = 'none';
+            student.style.opacity = '1';
+            student.style.pointerEvents = 'auto';
+            tutor.style.display = 'none';
+            tutor.style.opacity = '1';
+            tutor.style.pointerEvents = 'auto';
+        }
+
+        const items = document.querySelectorAll('.m-item');
+        const wraps = document.querySelectorAll('.content-wrap');
+        let current = 0, isMoving = false;
+
+        function triggerLearnAnim() {
+            const el = document.getElementById('v-learn');
+            el.classList.remove('playing');
+            void el.offsetWidth;
+            el.classList.add('playing');
+        }
+
+        function updateUI(index) {
+            items.forEach(i => i.classList.remove('active'));
+            wraps.forEach(w => w.classList.remove('active'));
+            items[index].classList.add('active');
+            wraps[index].classList.add('active');
+            current = index;
+            if (wraps[index].id === 'v-learn') { triggerLearnAnim(); }
+            else if (wraps[index].id === 'v-teach') { stopRubik(); setTimeout(initRubik, 80); }
+            else stopRubik();
+        }
+
+        const interactObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && current === 0) triggerLearnAnim();
+            });
+        }, { threshold: 0.5 });
+        const interactSection = document.getElementById('interact');
+        if (interactSection) interactObs.observe(interactSection);
+
+        window.addEventListener('wheel', (e) => {
+            if (!document.getElementById('page-home').classList.contains('active')) return;
+            const section = document.getElementById('interact');
+            if (!section) return;
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+                if (current === 3 && e.deltaY > 0) return;
+                if (current === 0 && e.deltaY < 0) return;
+                e.preventDefault();
+                if (isMoving) return;
+                isMoving = true;
+                if (e.deltaY > 0) current++; else current--;
+                updateUI(current);
+                setTimeout(() => { isMoving = false; }, 400);
+            }
+        }, { passive: false });
+
+        items.forEach((item, i) => item.addEventListener('click', () => updateUI(i)));
+
+        function replaySection(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (id === 'v-learn') { triggerLearnAnim(); return; }
+            el.classList.remove('active');
+            void el.offsetWidth;
+            el.classList.add('active');
+            if (id === 'v-teach') { stopRubik(); setTimeout(initRubik, 80); }
+        }
+
+        // ── Rubik engine ─────────────────────────────────────────────────
+        const OR='#E8622A', RU='#C44A1A', WH='#F7F0EA';
+        const FACE_CFG = {
+            ct:{cell:40,init:[OR,RU,RU,OR]}, tl:{cell:28,init:[OR,RU,RU,OR]},
+            tr:{cell:28,init:[RU,OR,OR,RU]}, bl:{cell:28,init:[RU,OR,OR,RU]},
+            br:{cell:28,init:[OR,RU,RU,OR]},
+        };
+        const RALL=['ct','tl','tr','bl','br'], ROUTER=['tl','tr','bl','br'];
+        let rState={}, rStrips={}, rTimers=[];
+        function rw(ms,cb){rTimers.push(setTimeout(cb,ms));}
+        function stopRubik(){rTimers.forEach(clearTimeout);rTimers=[];}
+
+        function buildFace(id) {
+            const cfg = FACE_CFG[id];
+            const root = document.getElementById('rubik-root');
+            let el = root.querySelector('.face.'+id);
+            if (el) el.remove();
+            el = document.createElement('div');
+            el.className = 'face '+id;
+            root.appendChild(el);
+            rState[id] = [...cfg.init];
+            rStrips[id] = [[],[]];
+            for (let row=0; row<2; row++) {
+                for (let col=0; col<2; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.style.width = cfg.cell+'px';
+                    cell.style.height = cfg.cell+'px';
+                    const strip = document.createElement('div');
+                    strip.className = 'strip';
+                    strip.style.width = (cfg.cell*3)+'px';
+                    strip.style.transform = 'translateX(-'+cfg.cell+'px)';
+                    const idx = row*2+col;
+                    const blocks = [];
+                    for (let b=0; b<3; b++) {
+                        const block = document.createElement('div');
+                        block.className = 'block';
+                        block.style.width = cfg.cell+'px';
+                        block.style.background = b===1 ? rState[id][idx] : WH;
+                        strip.appendChild(block);
+                        blocks.push(block);
+                    }
+                    cell.appendChild(strip);
+                    el.appendChild(cell);
+                    rStrips[id][row][col] = {el:strip, blocks};
+                }
+            }
+        }
+
+        function buildAll() { RALL.forEach(buildFace); }
+
+        function slideRowLTR(ids, row, done) {
+            ids.forEach(id => {
+                const sz=FACE_CFG[id].cell, s0=rStrips[id][row][0], s1=rStrips[id][row][1];
+                const old0=rState[id][row*2], old1=rState[id][row*2+1];
+                s0.blocks[0].style.background=WH;  s0.blocks[1].style.background=old0; s0.blocks[2].style.background=old1;
+                s1.blocks[0].style.background=old0; s1.blocks[1].style.background=old1; s1.blocks[2].style.background=WH;
+                s0.el.style.transition='none'; s1.el.style.transition='none';
+                s0.el.style.transform='translateX(-'+sz+'px)'; s1.el.style.transform='translateX(-'+sz+'px)';
+                void s0.el.offsetWidth;
+                s0.el.style.transition='transform 0.5s cubic-bezier(0.76,0,0.24,1)';
+                s1.el.style.transition='transform 0.5s cubic-bezier(0.76,0,0.24,1)';
+                s0.el.style.transform='translateX(0px)'; s1.el.style.transform='translateX(0px)';
+                rState[id][row*2]=WH; rState[id][row*2+1]=old0;
+                setTimeout(()=>{
+                    s0.blocks[0].style.background=WH; s0.blocks[1].style.background=rState[id][row*2]; s0.blocks[2].style.background=WH;
+                    s1.blocks[0].style.background=WH; s1.blocks[1].style.background=rState[id][row*2+1]; s1.blocks[2].style.background=WH;
+                    s0.el.style.transition='none'; s1.el.style.transition='none';
+                    s0.el.style.transform='translateX(-'+sz+'px)'; s1.el.style.transform='translateX(-'+sz+'px)';
+                },550);
+            });
+            if(done) rw(600,done);
+        }
+
+        function slideRowRTL(ids, row, done) {
+            ids.forEach(id => {
+                const sz=FACE_CFG[id].cell, s0=rStrips[id][row][0], s1=rStrips[id][row][1];
+                const old0=rState[id][row*2], old1=rState[id][row*2+1];
+                s0.blocks[0].style.background=WH;  s0.blocks[1].style.background=old0; s0.blocks[2].style.background=old1;
+                s1.blocks[0].style.background=old1; s1.blocks[1].style.background=old1; s1.blocks[2].style.background=WH;
+                s0.el.style.transition='none'; s1.el.style.transition='none';
+                s0.el.style.transform='translateX(-'+sz+'px)'; s1.el.style.transform='translateX(-'+sz+'px)';
+                void s0.el.offsetWidth;
+                s0.el.style.transition='transform 0.5s cubic-bezier(0.76,0,0.24,1)';
+                s1.el.style.transition='transform 0.5s cubic-bezier(0.76,0,0.24,1)';
+                s0.el.style.transform='translateX(-'+(sz*2)+'px)'; s1.el.style.transform='translateX(-'+(sz*2)+'px)';
+                rState[id][row*2]=old1; rState[id][row*2+1]=WH;
+                setTimeout(()=>{
+                    s0.blocks[0].style.background=WH; s0.blocks[1].style.background=rState[id][row*2]; s0.blocks[2].style.background=WH;
+                    s1.blocks[0].style.background=WH; s1.blocks[1].style.background=rState[id][row*2+1]; s1.blocks[2].style.background=WH;
+                    s0.el.style.transition='none'; s1.el.style.transition='none';
+                    s0.el.style.transform='translateX(-'+sz+'px)'; s1.el.style.transform='translateX(-'+sz+'px)';
+                },550);
+            });
+            if(done) rw(600,done);
+        }
+
+        function allWhite(ids){return ids.every(id=>rState[id].every(c=>c===WH));}
+
+        function conveyor(ids,done){
+            let step=0;
+            function tick(){
+                if(allWhite(ids)){done&&done();return;}
+                if(step%2===0) slideRowLTR(ids,0,null);
+                else           slideRowRTL(ids,1,null);
+                step++; rw(900,tick);
+            }
+            tick();
+        }
+
+        function initRubik(){
+            stopRubik(); buildAll();
+
+            // One step of the conveyor: alternates LTR row0 / RTL row1
+            function ctStep(step, done) {
+                if(step%2===0) slideRowLTR(['ct'],0,done);
+                else           slideRowRTL(['ct'],1,done);
+            }
+            function outerStep(step, done) {
+                if(step%2===0) slideRowLTR(ROUTER,0,done);
+                else           slideRowRTL(ROUTER,1,done);
+            }
+
+            // Run: ct does one step, then outer follow with same step, repeat until ct all-white
+            function runLinked(step) {
+                if(allWhite(['ct'])){ rw(800, restart); return; }
+                ctStep(step, ()=>{
+                    rw(100, ()=>{
+                        outerStep(step, ()=>{
+                            rw(300, ()=>runLinked(step+1));
+                        });
+                    });
+                });
+            }
+
+            function restart(){ buildAll(); rw(600, ()=>runLinked(0)); }
+            rw(600, ()=>runLinked(0));
+        }
+
+                // Tutor art scatter animation on mouseleave
+        function bindTutorArtScatter() {
+            ['choice-tutor-art', 'form-tutor-art'].forEach(id => {
+                const art = document.getElementById(id);
+                if (!art) return;
+                const panel = art.closest('.reg-choice-panel, .reg-tutor');
+                if (!panel) return;
+                panel.addEventListener('mouseleave', () => art.classList.add('scatter'));
+                panel.addEventListener('mouseenter', () => art.classList.remove('scatter'));
+            });
+        }
+        bindTutorArtScatter();
+        // Re-bind after form is shown since elements are hidden/shown dynamically
+        const _origShowRegForm = showRegForm;
+        showRegForm = function(role) {
+            _origShowRegForm(role);
+            setTimeout(bindTutorArtScatter, 50);
+        };
+
+
+    </script>
+
+<script>
+
+// ─── SHARED STATE ──────────────────────────────────────────────────────────
+let selectedShape = "tri"; // tri | sq | ci
+let selectedLabel = "";
+
+// ─── GLOBE ─────────────────────────────────────────────────────────────────
+const gc     = document.getElementById("globe-c");
+const gctx   = gc.getContext("2d");
+const gHover = document.getElementById("globe-hover-overlay");
+const ghctx  = gHover.getContext("2d");
+let globeHovered = false, hoverAnimId2, hoverT = 0;
+
+// L-connector from globe edge to card
+function drawHoverConnector(t) {
+  ghctx.clearRect(0,0,710,380);
+  if(t<=0) return;
+
+  // Overlay canvas: 710px wide, left edge = -330px from row origin
+  // Card right edge in overlay coords: (-290+250) - (-330) = 290px, y≈155
+  // Globe left rim in overlay coords: (0+20) - (-330) = 350px
+  // 3-segment L (2 right-angle turns):
+  //   A = card right edge center (290, 155)
+  //   B = (290, 80)   — go up
+  //   C = (350, 80)   — go right to rim x
+  //   D = (350, 155)  — go down to rim center y (connects to globe rim)
+  const A={x:290,y:155};
+  const B={x:290,y:80};
+  const C={x:350,y:80};
+  const D={x:350,y:155};
+
+  const s1=A.y-B.y;       // up
+  const s2=C.x-B.x;       // right
+  const s3=D.y-C.y;       // down
+  const total=s1+s2+s3;
+  const prog=t*total;
+
+  ghctx.save();
+  ghctx.strokeStyle="#E8622A";
+  ghctx.lineWidth=1.2;
+  ghctx.setLineDash([4,3]);
+  ghctx.beginPath();
+  ghctx.moveTo(A.x,A.y);
+  if(prog<=s1){
+    ghctx.lineTo(A.x, A.y-prog);
+  } else if(prog<=s1+s2){
+    ghctx.lineTo(B.x,B.y);
+    ghctx.lineTo(B.x+(prog-s1), B.y);
+  } else {
+    ghctx.lineTo(B.x,B.y);
+    ghctx.lineTo(C.x,C.y);
+    ghctx.lineTo(C.x, C.y+(prog-s1-s2));
+  }
+  ghctx.stroke();
+  ghctx.setLineDash([]);
+
+  // dot where it meets the globe rim
+  if(t>=1){
+    ghctx.beginPath();
+    ghctx.arc(D.x,D.y,3,0,Math.PI*2);
+    ghctx.fillStyle="#E8622A";
+    ghctx.fill();
+  }
+  ghctx.restore();
+}
+
+function animateHover(dir) {
+  if(hoverAnimId2) cancelAnimationFrame(hoverAnimId2);
+  const speed = 0.06;
+  function step(){
+    hoverT = Math.max(0, Math.min(1, hoverT + dir*speed));
+    drawHoverConnector(hoverT);
+    document.getElementById("atlas-card").style.opacity = hoverT;
+    if((dir>0 && hoverT<1)||(dir<0 && hoverT>0))
+      hoverAnimId2=requestAnimationFrame(step);
+  }
+  step();
+}
+
+gc.addEventListener("mouseenter",()=>{ globeHovered=true; animateHover(1); });
+gc.addEventListener("mouseleave",()=>{
+  globeHovered=false;
+  // only hide if mouse not over the card
+  setTimeout(()=>{
+    const card=document.getElementById("atlas-card");
+    if(!card.matches(":hover")) animateHover(-1);
+  }, 50);
+});
+document.getElementById("atlas-card").addEventListener("mouseenter",()=>{ animateHover(1); });
+document.getElementById("atlas-card").addEventListener("mouseleave",()=>{
+  setTimeout(()=>{ if(!gc.matches(":hover")) animateHover(-1); }, 50);
+});
+
+// Spiro card hover
+const sHover = document.getElementById("spiro-hover-overlay");
+const shctx  = sHover.getContext("2d");
+let spiroHovered=false, hoverAnimId3, hoverT2=0;
+
+function drawSpiroConnector(t) {
+  shctx.clearRect(0,0,710,380);
+  if(t<=0) return;
+  // Overlay: 710px wide, left=-330px from spiro canvas origin
+  // Spiro canvas right rim = 380-20 = 360px in canvas coords = 360+330 = 690px in overlay
+  // Card left edge = 380+40 = 420px from canvas origin = 750px in overlay... 
+  // Actually: card right:-290px means card left = row_right - 290 - 250
+  // Spiro canvas right edge in overlay = 330+380 = 710px
+  // Card left edge in overlay = 710 + 40(gap) = 750... overlay is only 710
+  // Let's recalc: overlay left=-330, spiro right edge=330+380=710 (edge of overlay)
+  // Card starts just past spiro right, so use 700px as spiro right rim in overlay
+  // 3-segment: from right rim of spiro → card left
+  //   A=(690, 155) right rim of globe
+  //   B=(690, 80)  up
+  //   C=(710, 80)  right (to edge / card left)
+  //   D=(710, 155) down
+  const A={x:690,y:155};
+  const B={x:690,y:80};
+  const C={x:710,y:80};
+  const D={x:710,y:155};
+
+  const s1=A.y-B.y;
+  const s2=C.x-B.x;
+  const s3=D.y-C.y;
+  const total=s1+s2+s3;
+  const prog=t*total;
+
+  shctx.save();
+  shctx.strokeStyle="#1E1208";
+  shctx.lineWidth=1.2;
+  shctx.setLineDash([4,3]);
+  shctx.beginPath();
+  shctx.moveTo(A.x,A.y);
+  if(prog<=s1){
+    shctx.lineTo(A.x,A.y-prog);
+  } else if(prog<=s1+s2){
+    shctx.lineTo(B.x,B.y);
+    shctx.lineTo(B.x+(prog-s1),B.y);
+  } else {
+    shctx.lineTo(B.x,B.y);
+    shctx.lineTo(C.x,C.y);
+    shctx.lineTo(C.x,C.y+(prog-s1-s2));
+  }
+  shctx.stroke();
+  shctx.setLineDash([]);
+  if(t>=1){
+    shctx.beginPath();
+    shctx.arc(A.x,A.y,3,0,Math.PI*2);
+    shctx.fillStyle="#1E1208";
+    shctx.fill();
+  }
+  shctx.restore();
+}
+
+function animateSpiroHover(dir){
+  if(hoverAnimId3) cancelAnimationFrame(hoverAnimId3);
+  const speed=0.06;
+  function step(){
+    hoverT2=Math.max(0,Math.min(1,hoverT2+dir*speed));
+    drawSpiroConnector(hoverT2);
+    document.getElementById("spiro-card").style.opacity=hoverT2;
+    if((dir>0&&hoverT2<1)||(dir<0&&hoverT2>0))
+      hoverAnimId3=requestAnimationFrame(step);
+  }
+  step();
+}
+
+const spiroCanvas=document.getElementById("spiro-c");
+spiroCanvas.addEventListener("mouseenter",()=>{ spiroHovered=true; animateSpiroHover(1); });
+spiroCanvas.addEventListener("mouseleave",()=>{
+  spiroHovered=false;
+  setTimeout(()=>{
+    const card=document.getElementById("spiro-card");
+    if(!card.matches(":hover")) animateSpiroHover(-1);
+  }, 50);
+});
+document.getElementById("spiro-card").addEventListener("mouseenter",()=>{ animateSpiroHover(1); });
+document.getElementById("spiro-card").addEventListener("mouseleave",()=>{
+  setTimeout(()=>{ if(!spiroCanvas.matches(":hover")) animateSpiroHover(-1); }, 50);
+});
+const GW=380, GCX=190, GCY=190, GR=170;
+const GINК   = "#1a1208";
+
+// scale: visual size multiplier. speed: spiro rotation speed. r,d: spiro params
+const MARKERS = [
+  {lat:40.71,lon:-74.01,type:"ci",label:"Marcus Webb",country:"USA",scale:0.8,speed:0.06,r:73,d:73},
+  {lat:51.51,lon:-0.13,type:"sq",label:"Priya Sharma",country:"UK",scale:1.0,speed:0.12,r:67,d:67},
+  {lat:35.68,lon:139.69,type:"ci",label:"Kenji Tanaka",country:"Japan",scale:0.9,speed:0.075,r:87,d:87},
+  {lat:48.85,lon:2.35,type:"tri",label:"Léa Moreau",country:"France",scale:0.8,speed:0.045,r:67,d:67},
+  {lat:19.08,lon:72.88,type:"sq",label:"Rohan Mehta",country:"India",scale:1.6,speed:0.12,r:87,d:87},
+  {lat:-23.55,lon:-46.63,type:"sq",label:"Ana Oliveira",country:"Brazil",scale:1.1,speed:0.075,r:89,d:89},
+  {lat:1.35,lon:103.82,type:"ci",label:"Wei Ling",country:"Singapore",scale:1.4,speed:0.075,r:71,d:71},
+  {lat:55.75,lon:37.62,type:"tri",label:"Dmitri Volkov",country:"Russia",scale:1.2,speed:0.135,r:53,d:53},
+  {lat:31.23,lon:121.47,type:"sq",label:"Mei Chen",country:"China",scale:1.3,speed:0.21,r:73,d:73},
+  {lat:-33.87,lon:151.21,type:"sq",label:"Liam Foster",country:"Australia",scale:1.3,speed:0.12,r:67,d:67},
+  {lat:30.04,lon:31.24,type:"sq",label:"Yasmine Nour",country:"Egypt",scale:0.9,speed:0.21,r:77,d:77},
+  {lat:-26.2,lon:28.04,type:"tri",label:"Thabo Dlamini",country:"S. Africa",scale:1.2,speed:0.135,r:53,d:53},
+  {lat:42.36,lon:-71.06,type:"ci",label:"Claire Osei",country:"USA",scale:1.6,speed:0.165,r:67,d:67},
+  {lat:51.75,lon:-1.26,type:"tri",label:"James Aldridge",country:"UK",scale:1.6,speed:0.06,r:73,d:73},
+  {lat:52.2,lon:0.12,type:"ci",label:"Sophia Grant",country:"UK",scale:1.3,speed:0.135,r:87,d:87},
+  {lat:37.87,lon:-122.27,type:"sq",label:"Arjun Patel",country:"USA",scale:0.8,speed:0.06,r:89,d:89},
+  {lat:13.08,lon:80.27,type:"sq",label:"Divya Nair",country:"India",scale:0.9,speed:0.15,r:71,d:71},
+  {lat:37.57,lon:126.98,type:"sq",label:"Ji-ho Lim",country:"S. Korea",scale:1.2,speed:0.21,r:81,d:81},
+  {lat:55.95,lon:-3.19,type:"ci",label:"Fiona MacLeod",country:"Scotland",scale:1.0,speed:0.18,r:77,d:77},
+  {lat:-37.81,lon:144.96,type:"tri",label:"Emma Nguyen",country:"Australia",scale:2.0,speed:0.12,r:73,d:73},
+  {lat:28.61,lon:77.21,type:"ci",label:"Vikram Singh",country:"India",scale:1.8,speed:0.06,r:89,d:89},
+  {lat:64.13,lon:-21.82,type:"sq",label:"Sigrid Björk",country:"Iceland",scale:1.1,speed:0.075,r:69,d:69},
+  {lat:-54.81,lon:-68.31,type:"tri",label:"Carlos Fuentes",country:"Argentina",scale:1.2,speed:0.21,r:89,d:89},
+  {lat:78.22,lon:15.65,type:"ci",label:"Ingrid Larsen",country:"Norway",scale:1.1,speed:0.075,r:89,d:89},
+  {lat:-17.53,lon:-149.57,type:"tri",label:"Tearii Mata",country:"Polynesia",scale:1.1,speed:0.045,r:53,d:53},
+  {lat:27.99,lon:86.93,type:"tri",label:"Pasang Sherpa",country:"Nepal",scale:1.2,speed:0.21,r:67,d:67},
+  {lat:-3.07,lon:37.35,type:"sq",label:"Amara Osei",country:"Tanzania",scale:1.3,speed:0.135,r:71,d:71},
+  {lat:61.22,lon:-149.9,type:"ci",label:"Ray Nakamura",country:"USA",scale:1.4,speed:0.165,r:89,d:89},
+  {lat:21.31,lon:-157.8,type:"tri",label:"Koa Akana",country:"Hawaii",scale:1.2,speed:0.09,r:69,d:69},
+  {lat:68.44,lon:17.43,type:"sq",label:"Erik Solberg",country:"Norway",scale:1.6,speed:0.075,r:73,d:73}
+];
+const COLORS = {sq:"#E8622A",tri:"#8B4513",ci:"#1E1208"};
+
+let rotY=0, globePaused=false;
+let projectedMarkers=[];
+
+function toRad(d){return d*Math.PI/180;}
+function latLonTo3D(lat,lon){
+  const φ=toRad(lat),λ=toRad(lon);
+  return[Math.cos(φ)*Math.cos(λ),Math.sin(φ),Math.cos(φ)*Math.sin(λ)];
+}
+function rotateY(x,y,z,a){return[x*Math.cos(a)-z*Math.sin(a),y,x*Math.sin(a)+z*Math.cos(a)];}
+function project(x,y,z){return[GCX+x*GR,GCY-y*GR];}
+
+function drawMarkerG(sx,sy,type,depth,label,hit,scale,country){
+  const alpha=0.25+depth*0.75;
+  const size=(4+depth*5)*(scale||1);
+  const col=COLORS[type];
+  gctx.save();
+  gctx.globalAlpha=alpha*(hit?1.4:1);
+  gctx.strokeStyle=col;
+  gctx.lineWidth=1+depth*0.6+(hit?1:0);
+  if(hit){gctx.shadowColor=col;gctx.shadowBlur=8;}
+  if(type==="sq"){
+    gctx.strokeRect(sx-size/2,sy-size/2,size,size);
+  }else if(type==="tri"){
+    gctx.beginPath();
+    gctx.moveTo(sx,sy-size*0.7);
+    gctx.lineTo(sx+size*0.65,sy+size*0.5);
+    gctx.lineTo(sx-size*0.65,sy+size*0.5);
+    gctx.closePath();gctx.stroke();
+  }else{
+    gctx.beginPath();gctx.arc(sx,sy,size*0.55,0,Math.PI*2);gctx.stroke();
+  }
+
+  gctx.restore();
+}
+
+function globeLoop(){
+  gctx.clearRect(0,0,GW,GW);
+  gctx.beginPath();gctx.arc(GCX,GCY,GR,0,Math.PI*2);
+  gctx.fillStyle="#ffffff";gctx.fill();
+  gctx.strokeStyle="rgba(26,18,8,0.1)";gctx.lineWidth=1;gctx.stroke();
+
+  // grid
+  gctx.save();gctx.globalAlpha=0.18;gctx.strokeStyle=GINК;gctx.lineWidth=0.6;
+  for(let lon=-180;lon<180;lon+=20){
+    gctx.beginPath();let f=true;
+    for(let lat=-90;lat<=90;lat+=3){
+      let[x,y,z]=latLonTo3D(lat,lon);[x,y,z]=rotateY(x,y,z,rotY);
+      if(z<0){f=true;continue;}
+      const[sx,sy]=project(x,y,z);f?gctx.moveTo(sx,sy):gctx.lineTo(sx,sy);f=false;
+    }gctx.stroke();
+  }
+  for(let lat=-80;lat<=80;lat+=20){
+    gctx.beginPath();let f=true;
+    for(let lon=-180;lon<=180;lon+=3){
+      let[x,y,z]=latLonTo3D(lat,lon);[x,y,z]=rotateY(x,y,z,rotY);
+      if(z<0){f=true;continue;}
+      const[sx,sy]=project(x,y,z);f?gctx.moveTo(sx,sy):gctx.lineTo(sx,sy);f=false;
+    }gctx.stroke();
+  }
+  gctx.restore();
+
+  projectedMarkers=MARKERS.map(m=>{
+    let[x,y,z]=latLonTo3D(m.lat,m.lon);[x,y,z]=rotateY(x,y,z,rotY);
+    const[sx,sy]=project(x,y,z);
+    return{...m,sx,sy,z,depth:(z+1)/2};
+  }).filter(m=>m.z>0);
+  projectedMarkers.sort((a,b)=>a.z-b.z);
+  projectedMarkers.forEach(m=>drawMarkerG(m.sx,m.sy,m.type,m.depth,m.label,m.label===selectedLabel,m.scale,m.country));
+
+  if(!globePaused)rotY+=0.004;
+  requestAnimationFrame(globeLoop);
+}
+
+// Click detection
+gc.addEventListener("click",e=>{
+  const rect=gc.getBoundingClientRect();
+  const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+  let best=null,bestD=Infinity;
+  projectedMarkers.forEach(m=>{
+    const d=Math.hypot(m.sx-mx,m.sy-my);
+    if(d<bestD){bestD=d;best=m;}
+  });
+  if(best&&bestD<28){
+    selectedShape=best.type;
+    selectedLabel=best.label;
+    sR=best.r||67; sD=best.d||67; sSpeed=best.speed||0.09;
+    sPrev=null;
+    recentCities=recentCities.filter(c=>c!==best.label);
+    recentCities.unshift(best.label);
+    if(recentCities.length>3) recentCities.pop();
+    updateRecent();
+  }
+});
+
+// ─── SPIROGRAPH ─────────────────────────────────────────────────────────────
+const sc    = document.getElementById("spiro-c");
+const sctx  = sc.getContext("2d");
+const SW=380, SCX=190, SCY=190, SR=160;
+
+const soff  = document.createElement("canvas");
+soff.width=SW; soff.height=SW;
+const soctx = soff.getContext("2d");
+
+// Simple hypotrochoid: inner circle r rolls inside outer SR, pen at distance d
+// r and d chosen per shape type
+const SHAPE_PARAMS = {
+  tri: { r:67, d:95 },   // irrational ratio → never closes
+  sq:  { r:53, d:85 },   // irrational ratio → dense fill
+  ci:  { r:79, d:110 },  // irrational ratio → flowing
+};
+
+let t_s=0, spiroPaused=false, spiroAnimId, sPrev=null;
+let recentCities=[];
+let sR=67, sD=67, sSpeed=0.09;
+
+function spiroInit(hard){
+  if(hard){ t_s=0; sPrev=null; soctx.clearRect(0,0,SW,SW); }
+}
+
+function penPos(t){
+  const x=SCX+(SR-sR)*Math.cos(t)+sD*Math.cos((SR-sR)/sR*t);
+  const y=SCY+(SR-sR)*Math.sin(t)-sD*Math.sin((SR-sR)/sR*t);
+  return[x,y];
+}
+
+function gearPos(t){
+  return[SCX+(SR-sR)*Math.cos(t), SCY+(SR-sR)*Math.sin(t)];
+}
+
+function typeOut(el, text, delay, done){
+  let i=0; el.textContent="";
+  function tick(){ if(i<text.length){el.textContent+=text[i++];setTimeout(tick,30);}else if(done)done(); }
+  setTimeout(tick, delay);
+}
+
+function updateRecent(){
+  const el=document.getElementById("recent-cities");
+  if(!el) return;
+  el.innerHTML="";
+  if(recentCities.length===0){
+    el.innerHTML='<span id="no-tutors" style="opacity:0.4;font-size:10px;">no tutors yet</span>';
+    return;
+  }
+  recentCities.forEach((c,i)=>{
+    const m=MARKERS.find(x=>x.label===c);
+    const col=COLORS[m?m.type:"sq"]||"#888";
+    const chip=document.createElement("span");
+    chip.style.cssText=`font-size:10px;font-weight:bold;color:${col};opacity:0;transition:opacity 0.4s ease;white-space:nowrap;`;
+    const country=m?` (${m.country})`:"";
+    el.appendChild(chip);
+    setTimeout(()=>{ chip.style.opacity="1"; }, i*120);
+    typeOut(chip, c+country, i*120, null);
+  });
+}
+
+function spiroLoop(){
+  if(!spiroPaused){
+    t_s+=sSpeed;
+    const pt=penPos(t_s);
+    if(sPrev){
+      soctx.beginPath();
+      soctx.moveTo(sPrev[0],sPrev[1]);
+      soctx.lineTo(pt[0],pt[1]);
+      const tc = COLORS[selectedShape]||"#1E1208";
+      const r2=parseInt(tc.slice(1,3),16), g2=parseInt(tc.slice(3,5),16), b2=parseInt(tc.slice(5,7),16);
+      soctx.strokeStyle=`rgba(${r2},${g2},${b2},0.55)`;
+      soctx.lineWidth=0.8;
+      soctx.stroke();
+    }
+    sPrev=pt;
+  }
+
+  sctx.clearRect(0,0,SW,SW);
+
+  // bg circle
+  sctx.beginPath();sctx.arc(SCX,SCY,SR+2,0,Math.PI*2);
+  sctx.fillStyle="#fff";sctx.fill();
+
+  // blit permanent pattern
+  sctx.save();
+  sctx.beginPath();sctx.arc(SCX,SCY,SR,0,Math.PI*2);sctx.clip();
+  sctx.drawImage(soff,0,0);
+  sctx.restore();
+
+  // outer ring
+  sctx.beginPath();sctx.arc(SCX,SCY,SR,0,Math.PI*2);
+  sctx.strokeStyle="rgba(26,18,8,0.12)";sctx.lineWidth=1;sctx.stroke();
+
+  // rolling gear circle
+  const[gx,gy]=gearPos(t_s);
+  const gRot=-(SR-sR)/sR*t_s;
+  const col=COLORS[selectedShape]||"#C44A1A";
+
+  sctx.beginPath();sctx.arc(gx,gy,sR,0,Math.PI*2);
+  sctx.strokeStyle="rgba(26,18,8,0.04)";sctx.lineWidth=0.5;sctx.stroke();
+
+  // draw selected shape inside rolling gear + city name
+  sctx.save();sctx.translate(gx,gy);sctx.rotate(gRot);
+  sctx.strokeStyle=col+"33";sctx.lineWidth=1;
+  if(selectedShape==="sq"){
+    const hw=sR/Math.SQRT2;
+    sctx.strokeRect(-hw,-hw,hw*2,hw*2);
+  }else if(selectedShape==="tri"){
+    sctx.beginPath();
+    for(let k=0;k<3;k++){
+      const a=k*2*Math.PI/3;
+      k===0?sctx.moveTo(sR*Math.cos(a),sR*Math.sin(a)):sctx.lineTo(sR*Math.cos(a),sR*Math.sin(a));
+    }
+    sctx.closePath();sctx.stroke();
+  }else{
+    sctx.beginPath();sctx.arc(0,0,sR,0,Math.PI*2);sctx.stroke();
+  }
+
+  sctx.restore();
+
+  // arm from gear center to pen
+  const[px,py]=penPos(t_s);
+  sctx.beginPath();sctx.moveTo(gx,gy);sctx.lineTo(px,py);
+  sctx.strokeStyle="rgba(26,18,8,0.08)";sctx.lineWidth=0.4;sctx.stroke();
+
+  // pen dot
+  sctx.beginPath();sctx.arc(px,py,1.5,0,Math.PI*2);
+  sctx.fillStyle=col;sctx.fill();
+
+  spiroAnimId=requestAnimationFrame(spiroLoop);
+}
+
+document.getElementById("spiro-pause").onclick=()=>{
+  spiroPaused=!spiroPaused;
+  document.getElementById("spiro-pause").textContent=spiroPaused?"resume":"pause";
+};
+document.getElementById("spiro-clear").onclick=()=>{ spiroInit(true); };
+
+// init
+spiroInit();
+globeLoop();
+document.getElementById("globe-stop").onclick=()=>{
+  globePaused=!globePaused;
+  document.getElementById("globe-stop").textContent=globePaused?"resume rotation":"stop rotation";
+};
+spiroLoop();
+
+</script>
+</body>
+</html>
