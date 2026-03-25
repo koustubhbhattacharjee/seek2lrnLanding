@@ -781,15 +781,193 @@
             color: var(--mid);
             pointer-events: none;
         }
+
+        /* ==================
+           MOBILE RESPONSIVE
+        ================== */
+
+        /* Hamburger button — hidden on desktop */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--parchment);
+            transition: all 0.3s ease;
+        }
+        .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .menu-toggle.open span:nth-child(2) { opacity: 0; }
+        .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        @media (max-width: 900px) {
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+
+            .interactive-section { flex-direction: column; height: auto; min-height: auto; }
+            .sidebar {
+                width: 100%; height: auto;
+                flex-direction: row; justify-content: center; align-items: center;
+                padding: 24px 5%;
+                border-right: none;
+                border-bottom: 1px solid rgba(240,230,220,0.08);
+                gap: 20px;
+            }
+            .m-item { font-size: 2.6rem; }
+            .m-item.active { transform: translateX(0) translateY(-4px); }
+            .display-area { width: 100%; min-height: 420px; padding: 24px; }
+        }
+
+        @media (max-width: 768px) {
+            /* ── Toolbar ── */
+            .toolbar { padding: 0 5%; height: 56px; }
+            .logo { font-size: 1.15rem; }
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 56px; left: 0; right: 0;
+                background: var(--brown);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px 5% 20px;
+                gap: 0;
+                border-top: 1px solid rgba(255,255,255,0.06);
+                z-index: 999;
+            }
+            .nav-links.open { display: flex; }
+            .nav-links a {
+                font-size: 0.72rem;
+                letter-spacing: 0.1em;
+                padding: 14px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+            .nav-links a.cta {
+                margin-top: 12px;
+                padding: 12px 20px !important;
+                text-align: center;
+                border-bottom: none;
+            }
+
+            /* ── Hero section — let content grow naturally ── */
+            .hero {
+                height: auto !important;
+                min-height: 100vh;
+                justify-content: flex-start !important;
+                padding-top: 80px !important;
+                padding-bottom: 48px !important;
+            }
+            /* Tagline moves up: logo(0) → tagline(1) → visuals(2) */
+            #hero-tagline { order: 1; margin-top: 8px; margin-bottom: 24px; }
+            #hero-visuals { order: 2; }
+
+            /* ── Hero canvas area ── */
+            #hero-visuals {
+                flex-direction: column !important;
+                gap: 24px !important;
+                align-items: center !important;
+            }
+            #globe-wrap, #spiro-wrap {
+                width: 300px !important;
+                height: 300px !important;
+            }
+            #globe-c, #spiro-c {
+                width: 300px !important;
+                height: 300px !important;
+            }
+            #globe-hover-overlay, #spiro-hover-overlay { display: none !important; }
+
+            /* ── Reorder flex children: globe → atlas-card → spiro-col ── */
+            #hero-visuals > div:nth-child(2) { order: 1; } /* globe column */
+            #atlas-card {
+                display: block !important;
+                position: static !important;
+                opacity: 1 !important;
+                width: 100% !important;
+                max-width: 300px;
+                order: 2; /* sits right below globe */
+            }
+            #hero-visuals > div:nth-child(3) { order: 3; } /* spiro column */
+
+            /* spiro-card is already inside spiro column after the canvas — just un-absolute it */
+            #spiro-card {
+                display: block !important;
+                position: static !important;
+                opacity: 1 !important;
+                width: 100% !important;
+                max-width: 300px;
+                right: auto !important;
+                top: auto !important;
+                margin-top: 4px;
+            }
+
+            /* ── Interactive section ── */
+            .interactive-section { flex-direction: column; height: auto; }
+            .sidebar {
+                width: 100%; height: auto;
+                flex-direction: row; justify-content: center; align-items: center;
+                flex-wrap: wrap;
+                padding: 20px 4%; gap: 14px;
+                border-right: none;
+                border-bottom: 1px solid rgba(240,230,220,0.08);
+            }
+            .m-item { font-size: 2rem; }
+            .m-item.active { transform: none; }
+            .display-area { width: 100%; min-height: 400px; padding: 20px; }
+            .box { width: 260px; height: 180px; }
+
+            /* ── Find a tutor ── */
+            .category-grid { grid-template-columns: 1fr; }
+            .tutor-header { padding: 50px 6% 36px; }
+            .card-art { height: 140px; overflow: hidden; }
+
+            /* ── Register page ── */
+            .reg-choice { grid-template-columns: 1fr; min-height: auto; }
+            .reg-choice-panel { padding: 50px 32px; min-height: 55vmax; }
+            .reg-choice-panel.tutor-panel::before { width: 100%; height: 2px; top: 0; left: 0; transform: scaleY(1) scaleX(0); transform-origin: left; }
+            .reg-choice-panel.tutor-panel:hover::before { transform: scaleY(1) scaleX(1); }
+            .reg-form-screen { grid-template-columns: 1fr !important; }
+            .reg-form-screen.visible { display: flex !important; flex-direction: column; }
+            .reg-student, .reg-tutor { padding: 50px 32px 56px; }
+            .field-row { grid-template-columns: 1fr; }
+            .reg-divider { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 1rem; }
+
+            #hero-visuals { gap: 16px !important; }
+            #globe-wrap, #spiro-wrap { width: 260px !important; height: 260px !important; }
+            #globe-c, #spiro-c { width: 260px !important; height: 260px !important; }
+            #atlas-card, #spiro-card { max-width: 260px; }
+
+            .m-item { font-size: 1.5rem; }
+            .sidebar { gap: 10px; padding: 16px 3%; }
+            .display-area { min-height: 360px; }
+            .box { width: 220px; height: 160px; }
+
+            .reg-choice-panel { padding: 36px 22px; }
+            .reg-student, .reg-tutor { padding: 36px 22px 48px; }
+            .card-art { height: 110px; }
+        }
     </style>
 </head>
 <body>
 
     <header class="toolbar">
         <a class="logo" onclick="showPage('home')">seek2lrn&reg;</a>
-        <nav class="nav-links">
-            <a onclick="showPage('tutors')">find a tutor</a>
-            <a onclick="showPage('register')" class="cta">register</a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="nav-links" id="nav-links">
+            <a onclick="showPage('tutors');closeMenu()">find a tutor</a>
+            <a onclick="showPage('register');closeMenu()" class="cta">register</a>
         </nav>
     </header>
 
@@ -806,7 +984,7 @@
             <div style="font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px;">seek2lrn&reg;</div>
 
             <!-- globe + knowledge spirograph side by side -->
-            <div style="position:relative;display:flex;gap:40px;align-items:flex-start;justify-content:center;">
+            <div id="hero-visuals" style="position:relative;display:flex;gap:40px;align-items:flex-start;justify-content:center;">
             <!-- hover card -->
             <div id="atlas-card" style="
                 position:absolute;left:-290px;top:60px;
@@ -833,7 +1011,7 @@
                 <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
                     <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">atlas</div>
                     <div style="font-size:9px;color:var(--mid);opacity:0.6;margin-top:2px;font-family:'DM Mono',monospace;">(click ↓ any shape to add to spirograph)</div>
-                    <div style="position:relative;width:380px;height:380px;">
+                    <div id="globe-wrap" style="position:relative;width:380px;height:380px;">
                     <canvas id="globe-c" width="380" height="380" style="position:absolute;top:0;left:0;cursor:crosshair;"></canvas>
                     <canvas id="globe-hover-overlay" width="710" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
                 </div>
@@ -848,7 +1026,7 @@
                             <span style="opacity:0.4;font-size:10px;">no tutors yet</span>
                         </div>
                     </div>
-                    <div style="position:relative;width:380px;height:380px;">
+                    <div id="spiro-wrap" style="position:relative;width:380px;height:380px;">
                     <canvas id="spiro-c" width="380" height="380" style="position:absolute;top:0;left:0;"></canvas>
                     <canvas id="spiro-hover-overlay" width="710" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
                 </div>
@@ -885,7 +1063,7 @@
             </div>
 
             <!-- bottom text -->
-            <div style="margin-top:28px;text-align:center;">
+            <div id="hero-tagline" style="margin-top:28px;text-align:center;">
                 <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;line-height:0.9;letter-spacing:-0.03em;color:var(--ink);">Global talent.</div>
                 <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;font-style:italic;line-height:0.9;letter-spacing:-0.03em;color:var(--rust);">Local impact.</div>
             </div>
@@ -1124,6 +1302,17 @@
     </div>
 
     <script>
+        function toggleMenu() {
+            const nav = document.getElementById('nav-links');
+            const btn = document.getElementById('menu-toggle');
+            nav.classList.toggle('open');
+            btn.classList.toggle('open');
+        }
+        function closeMenu() {
+            document.getElementById('nav-links').classList.remove('open');
+            document.getElementById('menu-toggle').classList.remove('open');
+        }
+
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + id).classList.add('active');
@@ -1215,6 +1404,27 @@
         }, { passive: false });
 
         items.forEach((item, i) => item.addEventListener('click', () => updateUI(i)));
+
+        // ── Touch swipe for interactive section ──────────────────────────
+        (function() {
+            const section = document.getElementById('interact');
+            let txStart = 0, tyStart = 0;
+            section.addEventListener('touchstart', e => {
+                txStart = e.touches[0].clientX;
+                tyStart = e.touches[0].clientY;
+            }, { passive: true });
+            section.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - txStart;
+                const dy = e.changedTouches[0].clientY - tyStart;
+                if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return; // not a horizontal swipe
+                if (isMoving) return;
+                isMoving = true;
+                if (dx > 0 && current < 3) current++;   // swipe right → next
+                else if (dx < 0 && current > 0) current--; // swipe left → prev
+                updateUI(current);
+                setTimeout(() => { isMoving = false; }, 400);
+            }, { passive: true });
+        })();
 
         function replaySection(id) {
             const el = document.getElementById(id);
@@ -1694,6 +1904,9 @@ gc.addEventListener("click",e=>{
     recentCities.unshift(best.label);
     if(recentCities.length>3) recentCities.pop();
     updateRecent();
+    if(window.innerWidth<=768){
+      setTimeout(()=>document.getElementById("spiro-wrap").scrollIntoView({behavior:"smooth",block:"start"}),120);
+    }
   }
 });
 
