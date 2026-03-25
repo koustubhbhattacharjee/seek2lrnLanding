@@ -783,6 +783,32 @@
         }
 
         /* ==================
+           HERO SIDECAR
+        ================== */
+        #hero-sidecar {
+            position: absolute;
+            right: 0; top: 0;
+            width: 240px; height: 100%;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 80px 40px 40px 28px;
+            border-left: 1px solid var(--dim);
+        }
+        .sidecar-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--mid);
+            margin-bottom: 14px;
+        }
+        .sidecar-body {
+            font-size: 0.75rem;
+            line-height: 1.85;
+            color: var(--mid);
+            font-weight: 300;
+            margin: 0;
+        }
+
+        /* ==================
            MOBILE RESPONSIVE
         ================== */
 
@@ -806,6 +832,10 @@
         .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         .menu-toggle.open span:nth-child(2) { opacity: 0; }
         .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        @media (max-width: 1100px) and (min-width: 769px) {
+            #hero-sidecar { display: none; }
+        }
 
         @media (max-width: 900px) {
             .category-grid { grid-template-columns: repeat(2, 1fr); }
@@ -863,9 +893,20 @@
                 padding-top: 80px !important;
                 padding-bottom: 48px !important;
             }
-            /* Tagline moves up: logo(0) → tagline(1) → visuals(2) */
-            #hero-tagline { order: 1; margin-top: 8px; margin-bottom: 24px; }
-            #hero-visuals { order: 2; }
+            /* Order: logo(0) → tagline(1) → sidecar(2) → visuals(3) */
+            #hero-tagline { order: 1; margin-top: 8px; margin-bottom: 16px; }
+            #hero-sidecar {
+                order: 2;
+                position: static;
+                width: 100%; height: auto;
+                padding: 20px 0 24px;
+                border-left: none;
+                border-top: 1px solid var(--dim);
+                border-bottom: 1px solid var(--dim);
+                text-align: center;
+                margin-bottom: 8px;
+            }
+            #hero-visuals { order: 3; }
 
             /* ── Hero canvas area ── */
             #hero-visuals {
@@ -1066,6 +1107,12 @@
             <div id="hero-tagline" style="margin-top:28px;text-align:center;">
                 <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;line-height:0.9;letter-spacing:-0.03em;color:var(--ink);">Global talent.</div>
                 <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;font-style:italic;line-height:0.9;letter-spacing:-0.03em;color:var(--rust);">Local impact.</div>
+            </div>
+
+            <!-- sidecar -->
+            <div id="hero-sidecar">
+                <div class="sidecar-label">about the platform</div>
+                <p class="sidecar-body">Seek2lrn is a marketplace for tutors and students all over the world. Teach, learn, explore and connect with people around the world without the fear of exorbitant fees. We create the platform for you to build your community.</p>
             </div>
         </section>
 
