@@ -1080,6 +1080,21 @@
                     <canvas id="spiro-c" width="380" height="380" style="position:absolute;top:0;left:0;"></canvas>
                     <canvas id="spiro-hover-overlay" width="710" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
                 </div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
+                        <div style="display:flex;align-items:center;gap:10px;width:100%;font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);">
+                            <span style="white-space:nowrap;opacity:0.6;">center</span>
+                            <input id="pen-slider" type="range" min="0" max="160" value="95"
+                                style="flex:1;accent-color:var(--accent);cursor:pointer;height:2px;">
+                            <span style="white-space:nowrap;opacity:0.6;">vertex</span>
+                        </div>
+                        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--mid);opacity:0.5;text-align:center;line-height:1.5;">
+                            pen offset — drag to move the drawing point from the<br>centre of the rolling shape to its outer edge
+                        </div>
+                        <div style="display:flex;gap:10px;">
+                            <button id="spiro-pause" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">pause</button>
+                            <button id="spiro-clear" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">clear</button>
+                        </div>
+                    </div>
                 <!-- spiro hover card — right side -->
                 <div id="spiro-card" style="
                     position:absolute;right:-290px;top:60px;
@@ -1104,21 +1119,6 @@
                         ">Register as a student →</a>
                     </div>
                 </div>
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
-                        <div style="display:flex;align-items:center;gap:10px;width:100%;font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);">
-                            <span style="white-space:nowrap;opacity:0.6;">center</span>
-                            <input id="pen-slider" type="range" min="0" max="160" value="95"
-                                style="flex:1;accent-color:var(--accent);cursor:pointer;height:2px;">
-                            <span style="white-space:nowrap;opacity:0.6;">vertex</span>
-                        </div>
-                        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--mid);opacity:0.5;text-align:center;line-height:1.5;">
-                            pen offset — drag to move the drawing point from the<br>centre of the rolling shape to its outer edge
-                        </div>
-                        <div style="display:flex;gap:10px;">
-                            <button id="spiro-pause" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">pause</button>
-                            <button id="spiro-clear" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">clear</button>
-                        </div>
-                    </div>
 
                 </div>
             </div>
@@ -2001,7 +2001,7 @@ let t_s=0, spiroPaused=false, spiroAnimId, sPrev=null;
 let recentCities=[];
 let sR=67, sD=67, sSpeed=0.09;
 let introT0=0; // t_s value when current tutor's intro started
-const INTRO_SPAN = 3*2*Math.PI;  // 3 full orbits at full intensity
+const INTRO_SPAN = 1.5*2*Math.PI;  // 1.5 full orbits at full intensity
 const FADE_SPAN  = 2*2*Math.PI;  // then 2 orbits to dissolve
 
 function introAlpha(){
