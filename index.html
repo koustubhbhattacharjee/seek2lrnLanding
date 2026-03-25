@@ -788,23 +788,30 @@
         #hero-sidecar {
             position: absolute;
             right: 0; top: 0;
-            width: 240px; height: 100%;
+            width: 320px; height: 100%;
             display: flex; flex-direction: column; justify-content: center;
-            padding: 80px 40px 40px 28px;
+            padding: 80px 44px 40px 32px;
             border-left: 1px solid var(--dim);
+            gap: 20px;
+        }
+        .sidecar-rule {
+            width: 24px; height: 2px;
+            background: var(--accent);
         }
         .sidecar-label {
-            font-size: 0.6rem;
-            letter-spacing: 0.18em;
+            font-size: 0.55rem;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
-            color: var(--mid);
-            margin-bottom: 14px;
+            color: var(--accent);
+            margin-bottom: 0;
         }
         .sidecar-body {
-            font-size: 0.75rem;
-            line-height: 1.85;
+            font-size: 0.62rem;
+            line-height: 1.75;
             color: var(--mid);
-            font-weight: 300;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            word-spacing: -0.04em;
             margin: 0;
         }
 
@@ -833,7 +840,7 @@
         .menu-toggle.open span:nth-child(2) { opacity: 0; }
         .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        @media (max-width: 1100px) and (min-width: 769px) {
+        @media (max-width: 1200px) and (min-width: 769px) {
             #hero-sidecar { display: none; }
         }
 
@@ -1111,6 +1118,7 @@
 
             <!-- sidecar -->
             <div id="hero-sidecar">
+                <div class="sidecar-rule"></div>
                 <div class="sidecar-label">about the platform</div>
                 <p class="sidecar-body">Seek2lrn is a marketplace for tutors and students all over the world. Teach, learn, explore and connect with people around the world without the fear of exorbitant fees. We create the platform for you to build your community.</p>
             </div>
