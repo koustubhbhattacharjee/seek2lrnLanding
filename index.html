@@ -1848,59 +1848,11 @@ function drawMarkerG(sx,sy,type,depth,label,hit,scale,country){
   gctx.restore();
 }
 
-// ── World land polygons ────────────────────────────────────────────────────
-let LAND_RINGS = null;
-(function(){
-  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json')
-    .then(r=>r.json())
-    .then(topo=>{
-      const {arcs, transform:{scale:[sx,sy],translate:[tx,ty]}} = topo;
-      function decodeArc(idx){
-        const raw=arcs[idx<0?~idx:idx];
-        let x=0,y=0;
-        const pts=raw.map(([dx,dy])=>{x+=dx;y+=dy;return[x*sx+tx,y*sy+ty];});
-        return idx<0?pts.slice().reverse():pts;
-      }
-      function buildRing(arcList){
-        const ring=[];
-        arcList.forEach((idx,i)=>{const pts=decodeArc(idx);ring.push(...(i===0?pts:pts.slice(1)));});
-        return ring;
-      }
-      const rings=[];
-      topo.objects.land.geometries.forEach(g=>{
-        if(g.type==='Polygon') g.arcs.forEach(al=>rings.push(buildRing(al)));
-        else if(g.type==='MultiPolygon') g.arcs.forEach(poly=>poly.forEach(al=>rings.push(buildRing(al))));
-      });
-      LAND_RINGS=rings;
-    });
-})();
-
-function drawLand(){
-  if(!LAND_RINGS) return;
-  gctx.save();
-  gctx.beginPath();gctx.arc(GCX,GCY,GR,0,Math.PI*2);gctx.clip();
-  gctx.fillStyle='#ffffff';
-  LAND_RINGS.forEach(ring=>{
-    gctx.beginPath();
-    let moved=false;
-    ring.forEach(([lon,lat])=>{
-      let[x,y,z]=latLonTo3D(lat,lon);[x,y,z]=rotateY(x,y,z,rotY);
-      if(z<0){moved=false;return;}
-      const[px,py]=project(x,y,z);
-      moved?gctx.lineTo(px,py):gctx.moveTo(px,py);
-      moved=true;
-    });
-    gctx.fill();
-  });
-  gctx.restore();
-}
-
 function globeLoop(){
   gctx.clearRect(0,0,GW,GW);
   gctx.beginPath();gctx.arc(GCX,GCY,GR,0,Math.PI*2);
-  gctx.fillStyle="#c8c8c8";gctx.fill();
+  gctx.fillStyle="#ffffff";gctx.fill();
   gctx.strokeStyle="rgba(26,18,8,0.1)";gctx.lineWidth=1;gctx.stroke();
-  drawLand();
 
   // grid
   gctx.save();gctx.globalAlpha=0.18;gctx.strokeStyle=GINК;gctx.lineWidth=0.6;
