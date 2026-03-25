@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>seek2lrn® | Global Marketplace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400;1,700&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;0,900;1,400;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -20,7 +20,7 @@
         }
 
         * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; background: var(--cream); font-family: 'DM Mono', monospace; color: var(--ink); overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; background: var(--cream); font-family: 'Space Mono', monospace; color: var(--ink); overflow-x: hidden; }
 
         body::after {
             content: ''; position: fixed; inset: 0; z-index: 9000; pointer-events: none; opacity: 0.028;
@@ -38,7 +38,7 @@
             justify-content: space-between; padding: 0 5%; z-index: 1000;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .logo { font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--parchment); cursor: pointer; text-decoration: none; }
+        .logo { font-family: 'Cormorant Garamond', serif; font-weight: 900; font-style: italic; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--parchment); cursor: pointer; text-decoration: none; }
         .nav-links { display: flex; gap: 25px; align-items: center; }
         .nav-links a { text-decoration: none; color: rgba(240,230,220,0.5); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; cursor: pointer; }
         .nav-links a:hover { color: var(--parchment); }
@@ -48,16 +48,16 @@
            HOME PAGE
         ================== */
         .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%; border-bottom: 1px solid var(--dim); }
-        .hero h1 { font-family: 'Playfair Display', serif; font-size: 7.5rem; font-weight: 900; line-height: 0.85; margin: 0 0 36px 0; letter-spacing: -0.03em; color: var(--ink); }
+        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 7.5rem; font-weight: 900; line-height: 0.85; margin: 0 0 36px 0; letter-spacing: -0.03em; color: var(--ink); }
         .hero h1 em { font-style: italic; color: var(--rust); }
         .hero p { font-size: 1.1rem; max-width: 580px; font-weight: 300; line-height: 1.7; margin: 0 0 40px 0; color: var(--mid); }
-        .hero-cta { display: inline-flex; align-items: center; gap: 14px; background: var(--brown); color: var(--accent); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 32px; cursor: pointer; transition: gap 0.3s, background 0.2s; border: none; font-family: 'DM Mono', monospace; }
+        .hero-cta { display: inline-flex; align-items: center; gap: 14px; background: var(--brown); color: var(--accent); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 32px; cursor: pointer; transition: gap 0.3s, background 0.2s; border: none; font-family: 'Space Mono', monospace; }
         .hero-cta:hover { gap: 24px; background: var(--rust); color: var(--parchment); }
         .hero-cta::after { content: '→'; font-size: 1rem; }
 
         .interactive-section { height: 100vh; background-color: var(--brown); display: flex; width: 100%; position: relative; }
         .sidebar { width: 33%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-right: 60px; border-right: 1px solid rgba(240,230,220,0.08); }
-        .m-item { font-family: 'Playfair Display', serif; font-size: 4.8rem; font-weight: 900; color: rgba(240,230,220,0.07); transition: all 0.4s ease; cursor: pointer; line-height: 0.9; letter-spacing: -0.02em; }
+        .m-item { font-family: 'Cormorant Garamond', serif; font-size: 4.8rem; font-weight: 900; color: rgba(240,230,220,0.07); transition: all 0.4s ease; cursor: pointer; line-height: 0.9; letter-spacing: -0.02em; }
         .m-item.active { font-style: italic; color: var(--accent); transform: translateX(15px); }
         .display-area { width: 66%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
         .content-wrap { position: absolute; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); width: 100%; pointer-events: none; }
@@ -335,7 +335,7 @@
             background: none;
             border: none;
             color: rgba(240,230,220,0.2);
-            font-family: 'DM Mono', monospace;
+            font-family: 'Space Mono', monospace;
             font-size: 0.6rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
@@ -350,7 +350,7 @@
         ================== */
         .tutor-page { padding-top: 70px; }
         .tutor-header { padding: 80px 10% 60px; border-bottom: 1px solid var(--dim); }
-        .tutor-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 6vw, 6rem); font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; color: var(--ink); margin: 0 0 20px 0; }
+        .tutor-header h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 6vw, 6rem); font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; color: var(--ink); margin: 0 0 20px 0; }
         .tutor-header h1 em { font-style: italic; color: var(--rust); }
         .tutor-header p { font-size: 0.85rem; color: var(--mid); line-height: 1.7; max-width: 480px; }
 
@@ -397,13 +397,13 @@
         .category-card:hover.misc .art-shape.a { transform: rotate(50deg); }
 
         .card-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); margin-bottom: 12px; }
-        .card-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; line-height: 0.9; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 16px; }
+        .card-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 900; line-height: 0.9; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 16px; }
         .card-title em { font-style: italic; color: var(--rust); }
         .card-desc { font-size: 0.75rem; line-height: 1.7; color: var(--mid); max-width: 300px; }
         .card-arrow { position: absolute; bottom: 28px; right: 28px; width: 32px; height: 32px; border: 1px solid var(--dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--ink); transition: all 0.3s; }
         .card-count { position: absolute; top: 28px; right: 28px; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--mid); }
 
-        .back-btn { display: inline-flex; align-items: center; gap: 10px; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); cursor: pointer; border: none; background: none; padding: 0; margin-bottom: 32px; transition: color 0.2s; font-family: 'DM Mono', monospace; }
+        .back-btn { display: inline-flex; align-items: center; gap: 10px; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); cursor: pointer; border: none; background: none; padding: 0; margin-bottom: 32px; transition: color 0.2s; font-family: 'Space Mono', monospace; }
         .back-btn:hover { color: var(--ink); }
         .back-btn::before { content: '←'; font-size: 1rem; }
 
@@ -454,7 +454,7 @@
         .reg-choice-panel.tutor-panel:hover::before { transform: scaleY(1); }
 
         .reg-headline {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cormorant Garamond', serif;
             font-weight: 900;
             font-size: clamp(2.4rem, 3.5vw, 3.8rem);
             line-height: 0.88;
@@ -690,7 +690,7 @@
         .field-input {
             width: 100%;
             padding: 12px 16px;
-            font-family: 'DM Mono', monospace;
+            font-family: 'Space Mono', monospace;
             font-size: 0.82rem;
             border: none;
             outline: none;
@@ -729,7 +729,7 @@
         .reg-btn {
             margin-top: 8px;
             padding: 16px 28px;
-            font-family: 'DM Mono', monospace;
+            font-family: 'Space Mono', monospace;
             font-size: 0.72rem;
             letter-spacing: 0.12em;
             text-transform: uppercase;
@@ -1031,7 +1031,7 @@
             border-bottom:1px solid var(--dim); position:relative;
         ">
             <!-- logo -->
-            <div style="font-family:'Playfair Display',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px;">seek2lrn&reg;</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px;">seek2lrn&reg;</div>
 
             <!-- globe + knowledge spirograph side by side -->
             <div id="hero-visuals" style="position:relative;display:flex;gap:40px;align-items:flex-start;justify-content:center;">
@@ -1040,19 +1040,19 @@
                 position:absolute;left:-290px;top:60px;
                 width:250px;padding:22px;
                 background:#E8622A;color:#1E1208;
-                font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;
+                font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;
                 opacity:0;pointer-events:auto;
                 transition:opacity 0.4s ease;
                 z-index:10;
             ">
-                <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;">The Atlas</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;">The Atlas</div>
                 Seek2lrn lets you pick any teacher, from anywhere in the world, curated for you.<br><br>
                 Shapes in this globe represent tutors from various parts of the world.<br><br>
                 Click on one of them to use their knowledge in knowledge spirograph.
                 <div style="margin-top:16px;">
                     <button onclick="showPage('tutors')" style="
                         background:#1E1208;color:#E8622A;
-                        border:none;font-family:'DM Mono',monospace;
+                        border:none;font-family:'Space Mono',monospace;
                         font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
                         padding:10px 18px;cursor:pointer;width:100%;
                     ">Find a tutor →</button>
@@ -1060,17 +1060,17 @@
             </div>
                 <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
                     <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">atlas</div>
-                    <div style="font-size:9px;color:var(--mid);opacity:0.6;margin-top:2px;font-family:'DM Mono',monospace;">(click ↓ any shape to add to spirograph)</div>
+                    <div style="font-size:9px;color:var(--mid);opacity:0.6;margin-top:2px;font-family:'Space Mono',monospace;">(click ↓ any shape to add to spirograph)</div>
                     <div id="globe-wrap" style="position:relative;width:380px;height:380px;">
                     <canvas id="globe-c" width="380" height="380" style="position:absolute;top:0;left:0;cursor:crosshair;"></canvas>
                     <canvas id="globe-hover-overlay" width="710" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
                 </div>
-                <button id="globe-stop" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 12px;cursor:pointer;margin-top:6px;">stop rotation</button>
+                <button id="globe-stop" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'Space Mono',monospace;font-size:9px;padding:4px 12px;cursor:pointer;margin-top:6px;">stop rotation</button>
                 </div>
 
                 <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
                     <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">knowledge spirograph</div>
-                    <div style="display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--mid);margin-top:3px;">
+                    <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;color:var(--mid);margin-top:3px;">
                         <span style="opacity:0.6;white-space:nowrap;">tutor name:</span>
                         <div id="recent-cities" style="display:flex;gap:12px;align-items:center;flex-wrap:nowrap;overflow:hidden;">
                             <span style="opacity:0.4;font-size:10px;">no tutors yet</span>
@@ -1081,18 +1081,18 @@
                     <canvas id="spiro-hover-overlay" width="760" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
                 </div>
                     <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
-                        <div style="display:flex;align-items:center;gap:10px;width:100%;font-family:'DM Mono',monospace;font-size:9px;color:var(--mid);">
+                        <div style="display:flex;align-items:center;gap:10px;width:100%;font-family:'Space Mono',monospace;font-size:9px;color:var(--mid);">
                             <span style="white-space:nowrap;opacity:0.6;">center</span>
                             <input id="pen-slider" type="range" min="0" max="160" value="95"
                                 style="flex:1;accent-color:var(--accent);cursor:pointer;height:2px;">
                             <span style="white-space:nowrap;opacity:0.6;">vertex</span>
                         </div>
-                        <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--mid);opacity:0.5;text-align:center;line-height:1.5;">
+                        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--mid);opacity:0.5;text-align:center;line-height:1.5;">
                             pen offset — drag to move the drawing point from the<br>centre of the rolling shape to its outer edge
                         </div>
                         <div style="display:flex;gap:10px;">
-                            <button id="spiro-pause" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">pause</button>
-                            <button id="spiro-clear" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'DM Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">clear</button>
+                            <button id="spiro-pause" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">pause</button>
+                            <button id="spiro-clear" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">clear</button>
                         </div>
                     </div>
                 <!-- spiro hover card — right side -->
@@ -1100,19 +1100,19 @@
                     position:absolute;right:-290px;top:60px;
                     width:250px;padding:22px;
                     background:#1E1208;color:#F0E6DC;
-                    font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;
+                    font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;
                     opacity:0;pointer-events:auto;
                     transition:opacity 0.4s ease;
                     z-index:10;
                 ">
-                    <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;color:#F0E6DC;">Knowledge Spirograph</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;color:#F0E6DC;">Knowledge Spirograph</div>
                     At seek2lrn, each individual's learning journey, like a piece of art, is unique.<br><br>
                     You'll have teachers from all around the world, vast array of subjects from the essentials to the eccentric, and all modern e-learning tools at your disposal. You are in complete control of your journey.<br><br>
                     Carve out your path.
                     <div style="margin-top:16px;">
                         <a onclick="showPage('register');setTimeout(()=>showRegForm('student'),100);" style="
                             display:block;background:#E8622A;color:#1E1208;
-                            font-family:'DM Mono',monospace;font-size:10px;
+                            font-family:'Space Mono',monospace;font-size:10px;
                             letter-spacing:0.1em;text-transform:uppercase;
                             padding:10px 18px;cursor:pointer;text-align:center;
                             text-decoration:none;
@@ -1125,8 +1125,8 @@
 
             <!-- bottom text -->
             <div id="hero-tagline" style="margin-top:28px;text-align:center;">
-                <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;line-height:0.9;letter-spacing:-0.03em;color:var(--ink);">Global talent.</div>
-                <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:2.8rem;font-style:italic;line-height:0.9;letter-spacing:-0.03em;color:var(--rust);">Local impact.</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-weight:900;font-size:2.8rem;line-height:0.9;letter-spacing:-0.03em;color:var(--ink);">Global talent.</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-weight:900;font-size:2.8rem;font-style:italic;line-height:0.9;letter-spacing:-0.03em;color:var(--rust);">Local impact.</div>
             </div>
 
             <!-- sidecar -->
