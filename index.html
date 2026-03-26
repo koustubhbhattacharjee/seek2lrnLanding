@@ -1084,7 +1084,7 @@
                     <canvas id="globe-c" width="380" height="380" style="position:absolute;top:0;left:0;cursor:crosshair;"></canvas>
                     <canvas id="globe-hover-overlay" width="710" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
                 </div>
-                <button id="globe-stop" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'Courier Prime',monospace;font-size:9px;padding:4px 12px;cursor:pointer;margin-top:6px;">stop rotation</button>
+                <button id="globe-stop" style="background:none;border:1px solid var(--dim);color:var(--mid);font-family:'Courier Prime',monospace;font-size:9px;padding:4px 12px;cursor:pointer;margin-top:6px;">resume rotation</button>
                 </div>
 
                 <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
@@ -1761,8 +1761,9 @@ const gHover = document.getElementById("globe-hover-overlay");
 const ghctx  = gHover.getContext("2d");
 let globeHovered = false;
 
-// Hint glow on globe hover (independent of card)
+// Rotation + hint glow on globe hover
 gc.addEventListener("mouseenter",()=>{
+  globePaused=false;
   const h=document.getElementById("globe-hint");
   h.style.fontSize="19px"; h.style.opacity="1";
   h.style.color="#E8622A";
@@ -1770,6 +1771,7 @@ gc.addEventListener("mouseenter",()=>{
   h.classList.add("glisten");
 });
 gc.addEventListener("mouseleave",()=>{
+  globePaused=true;
   const h=document.getElementById("globe-hint");
   h.style.fontSize="11px"; h.style.opacity="0.5";
   h.style.color="var(--mid)"; h.style.textShadow="none";
@@ -1925,7 +1927,7 @@ const MARKERS = [
 ];
 const COLORS = {sq:"#E8622A",tri:"#8B4513",ci:"#1E1208"};
 
-let rotY=0, globePaused=false;
+let rotY=0, globePaused=true;
 let projectedMarkers=[];
 
 function toRad(d){return d*Math.PI/180;}
