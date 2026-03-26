@@ -18,35 +18,138 @@
             document.getElementById('get-started-cta').style.opacity = '1';
         })();
 
+        function _applyCardStyles(teacherMode) {
+            const ac = document.getElementById('atlas-card');
+            const sc = document.getElementById('spiro-card');
+            if (teacherMode) {
+                ac.style.background = '#1E1208'; ac.style.color = '#F0E6DC';
+                ac.children[0].style.color = '#F0E6DC';
+                ac.children[1].style.color = 'rgba(240,230,220,0.6)';
+                sc.style.background = '#F0E6DC'; sc.style.color = '#1E1208';
+                sc.children[0].style.color = '#1E1208';
+                sc.children[1].style.color = 'rgba(30,18,8,0.65)';
+            } else {
+                ac.style.background = '#E8622A'; ac.style.color = '#1E1208';
+                ac.children[0].style.color = '';
+                ac.children[1].style.color = 'rgba(26,18,8,0.65)';
+                sc.style.background = '#1E1208'; sc.style.color = '#F0E6DC';
+                sc.children[0].style.color = '#F0E6DC';
+                sc.children[1].style.color = 'rgba(240,230,220,0.75)';
+            }
+        }
+
         function showStudentView() {
+            if (typeof setTeacherMode === 'function') setTeacherMode(false);
             const hero = document.querySelector('.hero');
             hero.style.transition = 'opacity 0.15s ease';
             hero.style.opacity = '0';
             setTimeout(() => {
+                const heroVisuals = document.getElementById('hero-visuals');
+                const interactSection = document.getElementById('interact');
+                const scrollCue = document.getElementById('scroll-cue');
                 hero.style.background = 'var(--cream)';
                 hero.style.borderBottom = '1px solid var(--dim)';
-                // Fix text colors for light background
-                document.querySelector('.hero > div').style.color = 'var(--ink)';
+                document.querySelector('.hero > div').style.color = 'var(--brown)';
                 document.getElementById('hero-type-text').style.color = 'var(--mid)';
                 document.getElementById('get-started-cta').style.display = 'none';
-                document.getElementById('teacher-placeholder').style.display = 'none';
-                document.getElementById('hero-visuals').style.display = 'flex';
+                _applyCardStyles(false);
+                heroVisuals.classList.remove('spiro-revealed');
+                document.getElementById('atlas-card').style.opacity = window.innerWidth <= 768 ? '1' : '0';
+                if (typeof selectedLabel !== 'undefined') selectedLabel = '';
+                if (typeof hoveredLabel !== 'undefined') hoveredLabel = '';
+                if (typeof globePaused !== 'undefined') globePaused = false;
+                const globeButton = document.getElementById('globe-stop');
+                if (globeButton) globeButton.textContent = 'stop rotation';
+                heroVisuals.style.display = 'flex';
+                if (interactSection) interactSection.style.display = 'flex';
+                if (scrollCue) {
+                    scrollCue.classList.remove('is-hidden');
+                    scrollCue.style.display = 'flex';
+                }
                 hero.style.opacity = '1';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 150);
         }
 
-        function showTeacherPlaceholder() {
-            document.getElementById('get-started-cta').querySelector('div:last-child').style.display = 'none';
-            document.getElementById('teacher-placeholder').style.display = 'block';
+        function showTeacherView() {
+            if (typeof setTeacherMode === 'function') setTeacherMode(true);
+            const hero = document.querySelector('.hero');
+            hero.style.transition = 'opacity 0.15s ease';
+            hero.style.opacity = '0';
+            setTimeout(() => {
+                const heroVisuals = document.getElementById('hero-visuals');
+                const interactSection = document.getElementById('interact');
+                const scrollCue = document.getElementById('scroll-cue');
+                hero.style.background = 'var(--accent)';
+                hero.style.borderBottom = '1px solid rgba(30,18,8,0.15)';
+                document.querySelector('.hero > div').style.color = 'var(--brown)';
+                document.getElementById('hero-type-text').style.color = 'rgba(30,18,8,0.55)';
+                document.getElementById('get-started-cta').style.display = 'none';
+                _applyCardStyles(true);
+                heroVisuals.classList.remove('spiro-revealed');
+                document.getElementById('atlas-card').style.opacity = '0';
+                if (typeof selectedLabel !== 'undefined') selectedLabel = '';
+                if (typeof hoveredLabel !== 'undefined') hoveredLabel = '';
+                if (typeof globePaused !== 'undefined') globePaused = false;
+                const globeButton = document.getElementById('globe-stop');
+                if (globeButton) globeButton.textContent = 'stop rotation';
+                heroVisuals.style.display = 'flex';
+                if (interactSection) interactSection.style.display = 'flex';
+                if (scrollCue) {
+                    scrollCue.classList.remove('is-hidden');
+                    scrollCue.style.display = 'flex';
+                }
+                hero.style.opacity = '1';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 150);
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + id).classList.add('active');
+            if (id === 'home') {
+                const hero = document.querySelector('.hero');
+                const heroVisuals = document.getElementById('hero-visuals');
+                const interactSection = document.getElementById('interact');
+                const scrollCue = document.getElementById('scroll-cue');
+                const getStarted = document.getElementById('get-started-cta');
+                const teacherPlaceholder = document.getElementById('teacher-placeholder');
+                const heroTypeText = document.getElementById('hero-type-text');
+                if (heroVisuals) heroVisuals.classList.remove('spiro-revealed');
+                if (heroVisuals) heroVisuals.style.display = 'none';
+                if (interactSection) interactSection.style.display = 'none';
+                if (scrollCue) {
+                    scrollCue.classList.remove('is-hidden');
+                    scrollCue.style.display = 'none';
+                }
+                if (typeof selectedLabel !== 'undefined') selectedLabel = '';
+                if (typeof hoveredLabel !== 'undefined') hoveredLabel = '';
+                if (getStarted) getStarted.style.display = 'flex';
+                if (teacherPlaceholder) teacherPlaceholder.style.display = 'none';
+                if (hero) {
+                    hero.style.background = 'var(--brown)';
+                    hero.style.borderBottom = '1px solid rgba(240,230,220,0.08)';
+                    hero.style.opacity = '1';
+                }
+                document.querySelector('.hero > div').style.color = 'var(--parchment)';
+                if (typeof setTeacherMode === 'function') setTeacherMode(false);
+                _applyCardStyles(false);
+                const atlasCard = document.getElementById('atlas-card');
+                if (atlasCard) atlasCard.style.opacity = '0';
+                if (heroTypeText) heroTypeText.style.color = 'rgba(240,230,220,0.6)';
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
             // Reset register to choice screen when navigating to it
             if (id === 'register') backToChoice();
+        }
+
+        function updateScrollCueVisibility() {
+            const scrollCue = document.getElementById('scroll-cue');
+            const interactSection = document.getElementById('interact');
+            if (!scrollCue || scrollCue.style.display === 'none' || !interactSection || interactSection.style.display === 'none') return;
+            const rect = interactSection.getBoundingClientRect();
+            if (rect.top <= window.innerHeight * 0.85) scrollCue.classList.add('is-hidden');
+            else scrollCue.classList.remove('is-hidden');
         }
 
         function showRegForm(role) {
@@ -108,11 +211,13 @@
 
         const interactObs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                if (entry.isIntersecting) updateScrollCueVisibility();
                 if (entry.isIntersecting && current === 0) triggerLearnAnim();
             });
         }, { threshold: 0.5 });
         const interactSection = document.getElementById('interact');
         if (interactSection) interactObs.observe(interactSection);
+        window.addEventListener('scroll', updateScrollCueVisibility, { passive: true });
 
         window.addEventListener('wheel', (e) => {
             if (!document.getElementById('page-home').classList.contains('active')) return;
@@ -321,5 +426,3 @@
             _origShowRegForm(role);
             setTimeout(bindTutorArtScatter, 50);
         };
-
-

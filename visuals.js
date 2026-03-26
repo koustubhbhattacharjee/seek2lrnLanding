@@ -2,6 +2,7 @@
 // ─── SHARED STATE ──────────────────────────────────────────────────────────
 let selectedShape = "tri"; // tri | sq | ci
 let selectedLabel = "";
+let hoveredLabel = "";
 
 // ─── GLOBE ─────────────────────────────────────────────────────────────────
 const gc     = document.getElementById("globe-c");
@@ -9,6 +10,18 @@ const gctx   = gc.getContext("2d");
 const gHover = document.getElementById("globe-hover-overlay");
 const ghctx  = gHover.getContext("2d");
 let globeHovered = false;
+const heroVisuals = document.getElementById("hero-visuals");
+const atlasCard = document.getElementById("atlas-card");
+const globeWrap = document.getElementById("globe-wrap");
+
+function isSpiroRevealed(){
+  return heroVisuals.classList.contains("spiro-revealed");
+}
+
+function revealSpirograph(){
+  if(isSpiroRevealed()) return;
+  heroVisuals.classList.add("spiro-revealed");
+}
 
 // Hint glow on hover only
 gc.addEventListener("mouseenter",()=>{
@@ -18,42 +31,85 @@ gc.addEventListener("mouseenter",()=>{
   h.style.textShadow="0 0 12px rgba(232,98,42,0.5), 0 0 28px rgba(232,98,42,0.25)";
   h.classList.add("glisten");
 });
+let atlasHideTimer=null;
 gc.addEventListener("mouseleave",()=>{
   const h=document.getElementById("globe-hint");
   h.style.fontSize="11px"; h.style.opacity="0.5";
   h.style.color="var(--mid)"; h.style.textShadow="none";
   h.classList.remove("glisten");
-  // hide card if pointer not over it
-  setTimeout(()=>{
-    if(!document.getElementById("atlas-card").matches(":hover")) hideAtlasCard();
-  }, 80);
+  hoveredLabel="";
+  atlasHideTimer=setTimeout(()=>hideAtlasCard(), 400);
+});
+atlasCard.addEventListener("mouseenter",()=>{
+  clearTimeout(atlasHideTimer);
+});
+atlasCard.addEventListener("mouseleave",()=>{
+  hideAtlasCard();
 });
 
-// Atlas card: click to show, leave globe+card to hide
+// Atlas card: hover teacher to show, leave globe to hide
 let atlasCardVisible=false;
 function showAtlasCard(){
   atlasCardVisible=true;
-  const card=document.getElementById("atlas-card");
-  card.style.transition="opacity 0.35s ease";
-  card.style.opacity="1";
+  positionAtlasCard();
+  atlasCard.style.transition="opacity 0.35s ease";
+  atlasCard.style.opacity="1";
 }
 function hideAtlasCard(){
   atlasCardVisible=false;
-  const card=document.getElementById("atlas-card");
-  card.style.transition="opacity 0.5s ease";
-  card.style.opacity="0";
-  ghctx.clearRect(0,0,710,380);
+  atlasCard.style.transition="opacity 0.5s ease";
+  atlasCard.style.opacity="0";
+  ghctx.clearRect(0,0,gHover.width,gHover.height);
 }
-document.getElementById("atlas-card").addEventListener("mouseleave",()=>{
-  setTimeout(()=>{ if(!gc.matches(":hover")) hideAtlasCard(); }, 80);
+
+function isMobileAtlasLayout(){
+  return window.innerWidth <= 768;
+}
+
+function positionAtlasCard(){
+  if(isMobileAtlasLayout()) {
+    atlasCard.style.left = "";
+    atlasCard.style.top = "";
+    return null;
+  }
+
+  const heroRect = heroVisuals.getBoundingClientRect();
+  const globeRect = globeWrap.getBoundingClientRect();
+  const gap = 40;
+  const cardWidth = atlasCard.offsetWidth || 250;
+  const cardHeight = atlasCard.offsetHeight || 220;
+  const left = globeRect.left - heroRect.left - gap - cardWidth;
+  const top = globeRect.top - heroRect.top + (globeRect.height - cardHeight) / 2;
+
+  atlasCard.style.left = `${left}px`;
+  atlasCard.style.top = `${Math.max(0, top)}px`;
+
+  return { heroRect, globeRect, cardWidth, cardHeight };
+}
+
+window.addEventListener("resize",()=>{
+  if(atlasCardVisible) drawDynamicConnector();
 });
 
-// Fixed connector from card right edge to globe left rim
+// Connector from card right edge to globe left rim, computed from live element bounds
 function drawDynamicConnector(){
-  const A={x:290,y:155}, B={x:290,y:80}, C={x:350,y:80}, D={x:350,y:155};
-  ghctx.clearRect(0,0,710,380);
+  ghctx.clearRect(0,0,gHover.width,gHover.height);
+  if(isMobileAtlasLayout()) return;
+
+  positionAtlasCard();
+
+  const overlayRect = gHover.getBoundingClientRect();
+  const cardRect = atlasCard.getBoundingClientRect();
+  const globeRect = globeWrap.getBoundingClientRect();
+
+  const A={x:cardRect.right-overlayRect.left,y:cardRect.top+cardRect.height/2-overlayRect.top};
+  const D={x:globeRect.left-overlayRect.left,y:globeRect.top+globeRect.height/2-overlayRect.top};
+  const elbowY=Math.min(A.y,D.y)-Math.min(76,Math.abs(D.x-A.x)*0.35);
+  const B={x:A.x,y:elbowY};
+  const C={x:D.x,y:elbowY};
+
   ghctx.save();
-  ghctx.strokeStyle="#E8622A"; ghctx.lineWidth=1.2; ghctx.setLineDash([4,3]);
+  ghctx.strokeStyle=connectorCol; ghctx.lineWidth=1.2; ghctx.setLineDash([4,3]);
   ghctx.beginPath();
   ghctx.moveTo(A.x,A.y);
   ghctx.lineTo(B.x,B.y);
@@ -62,7 +118,7 @@ function drawDynamicConnector(){
   ghctx.stroke();
   ghctx.setLineDash([]);
   ghctx.beginPath(); ghctx.arc(D.x,D.y,3,0,Math.PI*2);
-  ghctx.fillStyle="#E8622A"; ghctx.fill();
+  ghctx.fillStyle=connectorCol; ghctx.fill();
   ghctx.restore();
 }
 
@@ -123,6 +179,7 @@ function drawSpiroConnector(t) {
 }
 
 function animateSpiroHover(dir){
+  if(!isSpiroRevealed()) return;
   if(hoverAnimId3) cancelAnimationFrame(hoverAnimId3);
   const speed=0.06;
   function step(){
@@ -149,7 +206,29 @@ document.getElementById("spiro-card").addEventListener("mouseleave",()=>{
   setTimeout(()=>{ if(!spiroCanvas.matches(":hover")) animateSpiroHover(-1); }, 50);
 });
 const GW=380, GCX=190, GCY=190, GR=170;
-const GINК   = "#1a1208";
+let GINК     = "#1a1208";
+let globeFill   = "#ffffff";
+let globeStroke = "rgba(26,18,8,0.1)";
+let spiroFill   = "#fff";
+let spiroRing   = "rgba(26,18,8,0.12)";
+let mechRgb     = "26,18,8";
+let connectorCol = "#E8622A";
+
+function setTeacherMode(on) {
+  if (on) {
+    COLORS = {sq:"#F0E6DC", tri:"#E8622A", ci:"#F0E6DC"};
+    GINК = "#F0E6DC"; globeFill = "#1E1208"; globeStroke = "rgba(240,230,220,0.15)";
+    spiroFill = "#1E1208"; spiroRing = "rgba(240,230,220,0.18)";
+    mechRgb = "240,230,220"; connectorCol = "#F0E6DC";
+  } else {
+    COLORS = {sq:"#E8622A", tri:"#8B4513", ci:"#1E1208"};
+    GINК = "#1a1208"; globeFill = "#ffffff"; globeStroke = "rgba(26,18,8,0.1)";
+    spiroFill = "#fff"; spiroRing = "rgba(26,18,8,0.12)";
+    mechRgb = "26,18,8"; connectorCol = "#E8622A";
+  }
+  soctx.clearRect(0, 0, SW, SW);
+  sPrev = null;
+}
 
 // scale: visual size multiplier. speed: spiro rotation speed. r,d: spiro params
 const MARKERS = [
@@ -184,10 +263,19 @@ const MARKERS = [
   {lat:21.31,lon:-157.8,type:"tri",label:"Koa Akana",country:"Hawaii",scale:1.2,speed:0.09,r:69,d:69},
   {lat:68.44,lon:17.43,type:"sq",label:"Erik Solberg",country:"Norway",scale:1.6,speed:0.075,r:73,d:73}
 ];
-const COLORS = {sq:"#E8622A",tri:"#8B4513",ci:"#1E1208"};
+let COLORS = {sq:"#E8622A",tri:"#8B4513",ci:"#1E1208"};
 
 let rotY=0, globePaused=false;
 let projectedMarkers=[];
+
+function findNearestMarker(mx,my){
+  let best=null,bestD=Infinity;
+  projectedMarkers.forEach(m=>{
+    const d=Math.hypot(m.sx-mx,m.sy-my);
+    if(d<bestD){bestD=d;best=m;}
+  });
+  return best&&bestD<28 ? best : null;
+}
 
 function toRad(d){return d*Math.PI/180;}
 function latLonTo3D(lat,lon){
@@ -224,8 +312,8 @@ function drawMarkerG(sx,sy,type,depth,label,hit,scale,country){
 function globeLoop(){
   gctx.clearRect(0,0,GW,GW);
   gctx.beginPath();gctx.arc(GCX,GCY,GR,0,Math.PI*2);
-  gctx.fillStyle="#ffffff";gctx.fill();
-  gctx.strokeStyle="rgba(26,18,8,0.1)";gctx.lineWidth=1;gctx.stroke();
+  gctx.fillStyle=globeFill;gctx.fill();
+  gctx.strokeStyle=globeStroke;gctx.lineWidth=1;gctx.stroke();
 
   // grid
   gctx.save();gctx.globalAlpha=0.18;gctx.strokeStyle=GINК;gctx.lineWidth=0.6;
@@ -253,33 +341,46 @@ function globeLoop(){
     return{...m,sx,sy,z,depth:(z+1)/2};
   }).filter(m=>m.z>0);
   projectedMarkers.sort((a,b)=>a.z-b.z);
-  projectedMarkers.forEach(m=>drawMarkerG(m.sx,m.sy,m.type,m.depth,m.label,m.label===selectedLabel,m.scale,m.country));
+  projectedMarkers.forEach(m=>drawMarkerG(m.sx,m.sy,m.type,m.depth,m.label,m.label===selectedLabel||m.label===hoveredLabel,m.scale,m.country));
 
   // Connector: fixed to rim, shown when any teacher is selected
   if(atlasCardVisible) drawDynamicConnector();
-  else ghctx.clearRect(0,0,710,380);
+  else ghctx.clearRect(0,0,gHover.width,gHover.height);
 
   if(!globePaused)rotY+=0.004;
   requestAnimationFrame(globeLoop);
 }
 
+gc.addEventListener("mousemove",e=>{
+  const rect=gc.getBoundingClientRect();
+  const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+  const best=findNearestMarker(mx,my);
+  gc.style.cursor=best ? "pointer" : "crosshair";
+  if(best){
+    hoveredLabel=best.label;
+    showAtlasCard();
+  }else{
+    hoveredLabel="";
+  }
+});
+
 // Click detection
 gc.addEventListener("click",e=>{
   const rect=gc.getBoundingClientRect();
   const mx=e.clientX-rect.left, my=e.clientY-rect.top;
-  let best=null,bestD=Infinity;
-  projectedMarkers.forEach(m=>{
-    const d=Math.hypot(m.sx-mx,m.sy-my);
-    if(d<bestD){bestD=d;best=m;}
-  });
-  if(best&&bestD<28){
+  const best=findNearestMarker(mx,my);
+  if(best){
     selectedShape=best.type;
     selectedLabel=best.label;
     showAtlasCard();
+    revealSpirograph();
+    spiroStarted=true;
+    spiroPaused=false;
     sR=best.r||67; sD=best.d||67; sSpeed=best.speed||0.09;
     sPrev=null; introT0=t_s;
     const sl=document.getElementById("pen-slider");
     if(sl){ sl.value=sD; }
+    document.getElementById("spiro-pause").textContent="pause";
     recentCities=recentCities.filter(c=>c!==best.label);
     recentCities.unshift(best.label);
     if(recentCities.length>3) recentCities.pop();
@@ -311,6 +412,7 @@ let t_s=0, spiroPaused=false, spiroAnimId, sPrev=null;
 let recentCities=[];
 let sR=67, sD=67, sSpeed=0.09;
 let introT0=0; // t_s value when current tutor's intro started
+let spiroStarted=false;
 const INTRO_SPAN = 0.25*2*Math.PI;  // 0.25 full orbits at full intensity
 const FADE_SPAN  = 0.25*2*Math.PI;  // 0.25 orbits to full dissolve
 
@@ -362,7 +464,7 @@ function updateRecent(){
 }
 
 function spiroLoop(){
-  if(!spiroPaused){
+  if(spiroStarted && !spiroPaused){
     t_s+=sSpeed;
     const pt=penPos(t_s);
     if(sPrev){
@@ -382,7 +484,7 @@ function spiroLoop(){
 
   // bg circle
   sctx.beginPath();sctx.arc(SCX,SCY,SR+2,0,Math.PI*2);
-  sctx.fillStyle="#fff";sctx.fill();
+  sctx.fillStyle=spiroFill;sctx.fill();
 
   // blit permanent pattern
   sctx.save();
@@ -392,7 +494,12 @@ function spiroLoop(){
 
   // outer ring
   sctx.beginPath();sctx.arc(SCX,SCY,SR,0,Math.PI*2);
-  sctx.strokeStyle="rgba(26,18,8,0.12)";sctx.lineWidth=1;sctx.stroke();
+  sctx.strokeStyle=spiroRing;sctx.lineWidth=1;sctx.stroke();
+
+  if(!spiroStarted){
+    spiroAnimId=requestAnimationFrame(spiroLoop);
+    return;
+  }
 
   // rolling gear circle
   const[gx,gy]=gearPos(t_s);
@@ -402,7 +509,7 @@ function spiroLoop(){
   const iv=1-ia;         // 1=intro, 0=normal (convenience)
 
   sctx.beginPath();sctx.arc(gx,gy,sR,0,Math.PI*2);
-  sctx.strokeStyle=`rgba(26,18,8,${(0.04+iv*0.28).toFixed(2)})`;
+  sctx.strokeStyle=`rgba(${mechRgb},${(0.04+iv*0.28).toFixed(2)})`;
   sctx.lineWidth=0.5+iv*1.5;sctx.stroke();
 
   // shape inside rolling gear — bold during intro, ghost after
@@ -433,7 +540,7 @@ function spiroLoop(){
   // arm from gear center to pen
   const[px,py]=penPos(t_s);
   sctx.beginPath();sctx.moveTo(gx,gy);sctx.lineTo(px,py);
-  sctx.strokeStyle=`rgba(26,18,8,${(0.08+iv*0.22).toFixed(2)})`;
+  sctx.strokeStyle=`rgba(${mechRgb},${(0.08+iv*0.22).toFixed(2)})`;
   sctx.lineWidth=0.4+iv*0.8;sctx.stroke();
 
   // pen dot — large + glowing during intro, tiny after
@@ -452,6 +559,7 @@ function spiroLoop(){
 }
 
 document.getElementById("spiro-pause").onclick=()=>{
+  if(!spiroStarted) return;
   spiroPaused=!spiroPaused;
   document.getElementById("spiro-pause").textContent=spiroPaused?"resume":"pause";
 };
@@ -464,10 +572,10 @@ document.getElementById("pen-slider").oninput=function(){
 
 // init
 spiroInit();
+spiroPaused=true;
 globeLoop();
 document.getElementById("globe-stop").onclick=()=>{
   globePaused=!globePaused;
   document.getElementById("globe-stop").textContent=globePaused?"resume rotation":"stop rotation";
 };
 spiroLoop();
-

@@ -49,10 +49,10 @@
         .sidebar { width: 33%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-right: 60px; border-right: 1px solid rgba(240,230,220,0.08); }
         .m-item { font-family: 'Cormorant Garamond', serif; font-size: 4.8rem; font-weight: 900; color: rgba(240,230,220,0.07); transition: all 0.4s ease; cursor: pointer; line-height: 0.9; letter-spacing: -0.02em; }
         .m-item.active { font-style: italic; color: var(--accent); transform: translateX(15px); }
-        .display-area { width: 66%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+        .display-area { width: 66%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; padding: 0 32px; }
         .content-wrap { position: absolute; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); width: 100%; pointer-events: none; }
         .content-wrap.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .box { width: 500px; height: 220px; position: relative; margin-bottom: 20px; }
+        .box { width: 540px; height: 240px; position: relative; margin-bottom: 24px; }
         .s { position: absolute; transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1); }
 
         /* TEACH */
@@ -318,16 +318,16 @@
                 exploreSpin  6.8s linear 1 forwards,
                 exploreColor 6.8s linear 1 forwards;
         }
-        .desc-p { color: rgba(240,230,220,0.45); font-size: 0.85rem; font-weight: 300; text-align: center; max-width: 420px; line-height: 1.7; }
+        .desc-p { color: rgba(240,230,220,0.72); font-size: 1.05rem; font-weight: 300; text-align: center; max-width: 560px; line-height: 1.8; }
 
         .replay-btn {
             margin-top: 16px;
             background: none;
             border: none;
-            color: rgba(240,230,220,0.2);
+            color: rgba(240,230,220,0.42);
             font-family: 'Crimson Pro', serif;
-            font-size: 0.6rem;
-            letter-spacing: 0.14em;
+            font-size: 0.82rem;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             cursor: pointer;
             padding: 4px 0;
@@ -805,6 +805,82 @@
             margin: 0;
         }
 
+        #hero-visuals {
+            width: 100%;
+            max-width: 980px;
+            min-height: 520px;
+            margin-top: 8px;
+            overflow: visible;
+        }
+        #globe-col {
+            position: relative;
+            transform: translateX(0);
+            transition: transform 0.8s ease-in-out;
+            z-index: 2;
+        }
+        #spiro-col {
+            opacity: 0;
+            width: 0 !important;
+            max-width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transform: translateX(48px);
+            transform-origin: left center;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out, max-width 0.8s ease-in-out;
+        }
+        #hero-visuals.spiro-revealed #globe-col {
+            transform: translateX(-58px);
+        }
+        #hero-visuals.spiro-revealed #spiro-col {
+            opacity: 1;
+            width: 380px !important;
+            max-width: 380px;
+            overflow: visible;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+        #hero-visuals:not(.spiro-revealed) #spiro-card,
+        #hero-visuals:not(.spiro-revealed) #spiro-wrap,
+        #hero-visuals:not(.spiro-revealed) #spiro-hover-overlay,
+        #hero-visuals:not(.spiro-revealed) #recent-cities,
+        #hero-visuals:not(.spiro-revealed) #pen-slider,
+        #hero-visuals:not(.spiro-revealed) #spiro-pause,
+        #hero-visuals:not(.spiro-revealed) #spiro-clear {
+            pointer-events: none;
+        }
+        #scroll-cue {
+            position: relative;
+            z-index: 3;
+            transition: opacity 0.28s ease, transform 0.28s ease;
+        }
+        #scroll-cue.is-hidden {
+            opacity: 0;
+            transform: translateY(-8px);
+            pointer-events: none;
+        }
+        .scroll-cue-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brown);
+            font-size: 2.1rem;
+            line-height: 1;
+            text-shadow: 0 0 10px rgba(30,18,8,0.16), 0 0 22px rgba(30,18,8,0.12);
+            animation: scroll-cue-pulse 1.9s ease-in-out infinite;
+        }
+        @keyframes scroll-cue-pulse {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.72;
+                text-shadow: 0 0 8px rgba(30,18,8,0.14), 0 0 18px rgba(30,18,8,0.08);
+            }
+            50% {
+                transform: translateY(8px);
+                opacity: 1;
+                text-shadow: 0 0 14px rgba(30,18,8,0.24), 0 0 28px rgba(30,18,8,0.16);
+            }
+        }
+
         /* ==================
            MOBILE RESPONSIVE
         ================== */
@@ -846,9 +922,9 @@
                 border-bottom: 1px solid rgba(240,230,220,0.08);
                 gap: 20px;
             }
-            .m-item { font-size: 2.6rem; }
+            .m-item { font-size: 3rem; }
             .m-item.active { transform: translateX(0) translateY(-4px); }
-            .display-area { width: 100%; min-height: 420px; padding: 24px; }
+            .display-area { width: 100%; min-height: 460px; padding: 28px; }
         }
 
         @media (max-width: 768px) {
@@ -893,6 +969,7 @@
             #hero-tagline { order: 1; margin-top: 12px; margin-bottom: 0; }
             #get-started-cta { order: 2; }
             #teacher-placeholder { order: 2; }
+            #scroll-cue { order: 2; margin-top: 24px; display: none !important; }
             #hero-sidecar {
                 order: 2;
                 position: static;
@@ -910,11 +987,11 @@
 
             /* ── Hero canvas area: stacked, full-width ── */
             #hero-visuals {
-                display: flex !important;
                 flex-direction: column !important;
                 align-items: center !important;
                 gap: 16px !important;
                 width: 100% !important;
+                min-height: 0;
             }
             /* Dissolve globe-col so its children slot directly into the flex column */
             #globe-col { display: contents !important; }
@@ -926,9 +1003,11 @@
                 order: 2;
                 display: block !important;
                 position: static !important;
-                opacity: 1 !important;
-                width: 100% !important;
-                transition: none !important;
+                opacity: 0;
+                width: min(100%, 300px) !important;
+                max-width: 300px;
+                transition: opacity 0.3s ease;
+                margin-top: 4px;
             }
             #globe-col > div:nth-child(3) { display: none !important; } /* hide "(click ↓)" */
             #globe-wrap {
@@ -949,6 +1028,19 @@
             }
             #spiro-c   { width: 100% !important; height: 100% !important; }
             #globe-hover-overlay, #spiro-hover-overlay { display: none !important; }
+            #spiro-col {
+                opacity: 0;
+                width: 100% !important;
+                max-width: 320px;
+                max-height: 0;
+                transform: translateY(20px);
+                transition: opacity 0.45s ease, transform 0.45s ease, max-height 0.45s ease;
+            }
+            #hero-visuals.spiro-revealed #spiro-col {
+                opacity: 1;
+                max-height: 1000px;
+                transform: translateY(0);
+            }
 
             /* spiro-card is already inside spiro column after the canvas — just un-absolute it */
             #spiro-card {
@@ -972,10 +1064,12 @@
                 border-right: none;
                 border-bottom: 1px solid rgba(240,230,220,0.08);
             }
-            .m-item { font-size: 2rem; }
+            .m-item { font-size: 2.35rem; }
             .m-item.active { transform: none; }
-            .display-area { width: 100%; min-height: 400px; padding: 20px; }
-            .box { width: 260px; height: 180px; }
+            .display-area { width: 100%; min-height: 440px; padding: 24px 20px 28px; }
+            .box { width: 300px; height: 200px; }
+            .desc-p { font-size: 0.98rem; max-width: 92%; }
+            .replay-btn { font-size: 0.76rem; }
 
             /* ── Find a tutor ── */
             .category-grid { grid-template-columns: 1fr; }
@@ -1000,12 +1094,14 @@
             #hero-visuals { gap: 16px !important; }
             #globe-wrap, #spiro-wrap { width: 260px !important; height: 260px !important; }
             #globe-c, #spiro-c { width: 260px !important; height: 260px !important; }
-            #atlas-card, #spiro-card { max-width: 260px; }
+            #atlas-card, #spiro-card { max-width: 260px; width: min(100%, 260px) !important; }
 
-            .m-item { font-size: 1.5rem; }
+            .m-item { font-size: 1.85rem; }
             .sidebar { gap: 10px; padding: 16px 3%; }
-            .display-area { min-height: 360px; }
-            .box { width: 220px; height: 160px; }
+            .display-area { min-height: 400px; }
+            .box { width: 240px; height: 170px; }
+            .desc-p { font-size: 0.92rem; line-height: 1.7; }
+            .replay-btn { font-size: 0.72rem; }
 
             .reg-choice-panel { padding: 36px 22px; }
             .reg-student, .reg-tutor { padding: 36px 22px 48px; }
