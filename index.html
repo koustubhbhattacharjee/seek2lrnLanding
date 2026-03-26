@@ -1047,7 +1047,16 @@
             border-bottom:1px solid rgba(240,230,220,0.08); position:relative;
         ">
             <!-- logo -->
-            <div style="font-family:'IM Fell English',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--parchment);margin-bottom:24px;">seek2lrn<sup style="font-size:0.45em;vertical-align:super;line-height:0;">&reg;</sup></div>
+            <div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-style:italic;font-size:2.4rem;letter-spacing:-0.02em;color:var(--parchment);margin-bottom:20px;">seek2lrn<sup style="font-size:0.45em;vertical-align:super;line-height:0;">&reg;</sup></div>
+
+            <!-- slide-up transition panel -->
+            <div id="hero-slide" style="
+                position:fixed;inset:0;z-index:500;
+                background:var(--cream);
+                transform:translateY(100%);
+                transition:transform 0.7s cubic-bezier(0.76,0,0.24,1);
+                pointer-events:none;
+            "></div>
 
             <!-- globe + knowledge spirograph side by side -->
             <div id="hero-visuals" style="position:relative;display:none;gap:40px;align-items:flex-start;justify-content:center;">
@@ -1151,7 +1160,7 @@
 
             <!-- get started CTA -->
             <div id="get-started-cta" style="margin-top:40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;opacity:0;transition:opacity 0.8s ease;">
-                <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;letter-spacing:0.04em;color:var(--parchment);text-transform:uppercase;">get started</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;letter-spacing:0.01em;color:rgba(240,230,220,0.55);">how would you like to join?</div>
                 <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
                     <button onclick="showStudentView()" style="
                         background:var(--accent);color:var(--brown);
@@ -1435,11 +1444,27 @@
         })();
 
         function showStudentView() {
-            document.getElementById('get-started-cta').style.display = 'none';
-            document.getElementById('teacher-placeholder').style.display = 'none';
-            const v = document.getElementById('hero-visuals');
-            v.style.display = 'flex';
-            v.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const slide = document.getElementById('hero-slide');
+            const hero  = document.querySelector('.hero');
+            // Trigger slide-up
+            requestAnimationFrame(()=>{
+                slide.style.transform = 'translateY(0)';
+            });
+            slide.addEventListener('transitionend', function onDone(){
+                slide.removeEventListener('transitionend', onDone);
+                // Swap hero background, reveal content
+                hero.style.background = 'var(--cream)';
+                hero.style.borderBottom = '1px solid var(--dim)';
+                document.getElementById('get-started-cta').style.display = 'none';
+                document.getElementById('teacher-placeholder').style.display = 'none';
+                const v = document.getElementById('hero-visuals');
+                v.style.display = 'flex';
+                // Hide slide panel
+                slide.style.transition = 'none';
+                slide.style.transform = 'translateY(100%)';
+                requestAnimationFrame(()=>{ slide.style.transition = 'transform 0.7s cubic-bezier(0.76,0,0.24,1)'; });
+                v.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, { once: true });
         }
 
         function showTeacherPlaceholder() {
