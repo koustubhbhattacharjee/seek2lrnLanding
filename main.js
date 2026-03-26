@@ -70,10 +70,13 @@
                 UI_IDS.forEach(id => {
                     const el = document.getElementById(id);
                     if (!el) return;
-                    el.style.color = 'rgba(30,18,8,0.75)';
+                    el.style.color = id === 'globe-hint' ? '#F0E6DC' : 'rgba(30,18,8,0.75)';
                     if (el.tagName === 'BUTTON') el.style.borderColor = 'rgba(30,18,8,0.25)';
                 });
-                document.getElementById('globe-hint').style.opacity = '0.85';
+                document.getElementById('globe-hint').style.opacity = '1';
+                document.getElementById('spiro-label').textContent = 'instruction graph';
+                const nameSpan = document.querySelector('#name-row span');
+                if (nameSpan) nameSpan.textContent = 'student name:';
             } else {
                 UI_IDS.forEach(id => {
                     const el = document.getElementById(id);
@@ -82,11 +85,16 @@
                     if (el.tagName === 'BUTTON') el.style.borderColor = '';
                 });
                 document.getElementById('globe-hint').style.opacity = '0.5';
+                document.getElementById('spiro-label').textContent = 'knowledge spirograph';
+                const nameSpan = document.querySelector('#name-row span');
+                if (nameSpan) nameSpan.textContent = 'tutor name:';
             }
         }
 
         function showStudentView() {
             if (typeof setTeacherMode === 'function') setTeacherMode(false);
+            const vsb = document.getElementById('view-switch-btn');
+            if (vsb) { vsb.style.display = 'block'; vsb.dataset.mode = 'student'; vsb.textContent = 'switch to teacher'; vsb.style.background = '#E8622A'; vsb.style.color = '#1E1208'; }
             const hero = document.querySelector('.hero');
             hero.style.transition = 'opacity 0.15s ease';
             hero.style.opacity = '0';
@@ -123,6 +131,8 @@
 
         function showTeacherView() {
             if (typeof setTeacherMode === 'function') setTeacherMode(true);
+            const vsb = document.getElementById('view-switch-btn');
+            if (vsb) { vsb.style.display = 'block'; vsb.dataset.mode = 'teacher'; vsb.textContent = 'switch to student'; vsb.style.background = '#F0E6DC'; vsb.style.color = '#1E1208'; }
             const hero = document.querySelector('.hero');
             hero.style.transition = 'opacity 0.15s ease';
             hero.style.opacity = '0';
@@ -193,6 +203,8 @@
                 const atlasCard = document.getElementById('atlas-card');
                 if (atlasCard) atlasCard.style.opacity = '0';
                 if (heroTypeText) heroTypeText.style.color = 'rgba(240,230,220,0.88)';
+                const vsb = document.getElementById('view-switch-btn');
+                if (vsb) vsb.style.display = 'none';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
             // Reset register to choice screen when navigating to it

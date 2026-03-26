@@ -849,8 +849,10 @@
             pointer-events: none;
         }
         #scroll-cue {
-            position: relative;
-            z-index: 3;
+            position: sticky;
+            bottom: 24px;
+            z-index: 10;
+            align-self: center;
             transition: opacity 0.28s ease, transform 0.28s ease;
         }
         #scroll-cue.is-hidden {

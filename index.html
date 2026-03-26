@@ -22,6 +22,9 @@
         </nav>
     </header>
 
+    <!-- View-switch button: fixed below navbar -->
+    <button id="view-switch-btn" onclick="this.dataset.mode==='teacher'?showStudentView():showTeacherView()" style="display:none;position:fixed;top:78px;left:32px;z-index:999;font-family:'Crimson Pro',serif;font-size:0.8rem;letter-spacing:0.08em;border:none;padding:8px 20px;cursor:pointer;transition:opacity 0.2s;"></button>
+
     <!-- ===== HOME PAGE ===== -->
     <div id="page-home" class="page active">
         <section class="hero" style="
@@ -142,7 +145,7 @@
 
             <!-- get started CTA -->
             <div id="get-started-cta" style="margin-top:36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;opacity:1;transition:opacity 0.8s ease;">
-                <div style="font-family:'Crimson Pro',serif;font-size:1.15rem;font-weight:300;color:rgba(240,230,220,0.45);letter-spacing:0em;">how would you like to join?</div>
+                <div style="font-family:'Crimson Pro',serif;font-size:1.15rem;font-weight:300;color:rgba(240,230,220,0.88);letter-spacing:0em;">how would you like to join?</div>
                 <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
                     <button onclick="showStudentView()" style="
                         background:var(--accent);color:var(--brown);

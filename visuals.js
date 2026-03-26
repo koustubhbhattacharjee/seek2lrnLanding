@@ -27,16 +27,22 @@ function revealSpirograph(){
 gc.addEventListener("mouseenter",()=>{
   const h=document.getElementById("globe-hint");
   h.style.fontSize="19px"; h.style.opacity="1";
-  h.style.color="#E8622A";
-  h.style.textShadow="0 0 12px rgba(232,98,42,0.5), 0 0 28px rgba(232,98,42,0.25)";
+  if (isTeacher) {
+    h.style.color="#ffffff";
+    h.style.textShadow="0 0 12px rgba(255,255,255,0.6), 0 0 28px rgba(255,255,255,0.3)";
+  } else {
+    h.style.color="#E8622A";
+    h.style.textShadow="0 0 12px rgba(232,98,42,0.5), 0 0 28px rgba(232,98,42,0.25)";
+  }
   h.classList.add("glisten");
 });
 let atlasHideTimer=null;
 gc.addEventListener("mouseleave",()=>{
   const h=document.getElementById("globe-hint");
-  h.style.fontSize="11px"; h.style.opacity="0.5";
-  h.style.color="var(--mid)"; h.style.textShadow="none";
+  h.style.fontSize="11px"; h.style.textShadow="none";
   h.classList.remove("glisten");
+  if (isTeacher) { h.style.color="#F0E6DC"; h.style.opacity="1"; }
+  else { h.style.color="var(--mid)"; h.style.opacity="0.5"; }
   hoveredLabel="";
   atlasHideTimer=setTimeout(()=>hideAtlasCard(), 400);
 });
@@ -214,7 +220,9 @@ let spiroRing   = "rgba(26,18,8,0.12)";
 let mechRgb     = "26,18,8";
 let connectorCol = "#E8622A";
 
+let isTeacher = false;
 function setTeacherMode(on) {
+  isTeacher = on;
   if (on) {
     COLORS = {sq:"#F0E6DC", tri:"#E8622A", ci:"#F0E6DC"};
     GINК = "#F0E6DC"; globeFill = "#1E1208"; globeStroke = "rgba(240,230,220,0.15)";
