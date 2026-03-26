@@ -1755,34 +1755,32 @@ const gHover = document.getElementById("globe-hover-overlay");
 const ghctx  = gHover.getContext("2d");
 let globeHovered = false;
 
-// Hint glow on hover
+// Hint glow on hover only
 gc.addEventListener("mouseenter",()=>{
   const h=document.getElementById("globe-hint");
   h.style.fontSize="19px"; h.style.opacity="1";
   h.style.color="#E8622A";
   h.style.textShadow="0 0 12px rgba(232,98,42,0.5), 0 0 28px rgba(232,98,42,0.25)";
   h.classList.add("glisten");
-  showAtlasCard();
 });
 gc.addEventListener("mouseleave",()=>{
   const h=document.getElementById("globe-hint");
   h.style.fontSize="11px"; h.style.opacity="0.5";
   h.style.color="var(--mid)"; h.style.textShadow="none";
   h.classList.remove("glisten");
+  // hide card if pointer not over it
   setTimeout(()=>{
-    const card=document.getElementById("atlas-card");
-    if(!card.matches(":hover")) hideAtlasCard();
+    if(!document.getElementById("atlas-card").matches(":hover")) hideAtlasCard();
   }, 80);
 });
 
-// Atlas card: hover show/hide
+// Atlas card: click to show, leave globe+card to hide
 let atlasCardVisible=false;
 function showAtlasCard(){
   atlasCardVisible=true;
   const card=document.getElementById("atlas-card");
-  card.style.transition="opacity 0.4s ease";
+  card.style.transition="opacity 0.35s ease";
   card.style.opacity="1";
-  drawDynamicConnector();
 }
 function hideAtlasCard(){
   atlasCardVisible=false;
@@ -1791,7 +1789,6 @@ function hideAtlasCard(){
   card.style.opacity="0";
   ghctx.clearRect(0,0,710,380);
 }
-document.getElementById("atlas-card").addEventListener("mouseenter",()=>{ showAtlasCard(); });
 document.getElementById("atlas-card").addEventListener("mouseleave",()=>{
   setTimeout(()=>{ if(!gc.matches(":hover")) hideAtlasCard(); }, 80);
 });
@@ -2004,7 +2001,8 @@ function globeLoop(){
   projectedMarkers.forEach(m=>drawMarkerG(m.sx,m.sy,m.type,m.depth,m.label,m.label===selectedLabel,m.scale,m.country));
 
   // Connector: fixed to rim, shown when any teacher is selected
-  if(!selectedLabel) ghctx.clearRect(0,0,710,380);
+  if(atlasCardVisible) drawDynamicConnector();
+  else ghctx.clearRect(0,0,710,380);
 
   if(!globePaused)rotY+=0.004;
   requestAnimationFrame(globeLoop);
@@ -2022,6 +2020,7 @@ gc.addEventListener("click",e=>{
   if(best&&bestD<28){
     selectedShape=best.type;
     selectedLabel=best.label;
+    showAtlasCard();
     sR=best.r||67; sD=best.d||67; sSpeed=best.speed||0.09;
     sPrev=null; introT0=t_s;
     const sl=document.getElementById("pen-slider");
