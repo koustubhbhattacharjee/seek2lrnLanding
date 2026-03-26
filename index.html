@@ -1784,28 +1784,24 @@ function showAtlasCard(){
   const card=document.getElementById("atlas-card");
   card.style.transition="opacity 0.4s ease";
   card.style.opacity="1";
+  drawDynamicConnector();
 }
 
-// Dynamic connector — called every frame from globeLoop when a teacher is selected
-function drawDynamicConnector(sx,sy){
-  // overlay coords: globe canvas pixel (sx,sy) → overlay (sx+330, sy)
-  const mX=sx+330, mY=sy;
-  const cX=290, cY=155; // card right-edge centre in overlay
+// Fixed connector from card right edge to globe left rim
+function drawDynamicConnector(){
+  const A={x:290,y:155}, B={x:290,y:80}, C={x:350,y:80}, D={x:350,y:155};
   ghctx.clearRect(0,0,710,380);
   ghctx.save();
   ghctx.strokeStyle="#E8622A"; ghctx.lineWidth=1.2; ghctx.setLineDash([4,3]);
   ghctx.beginPath();
-  ghctx.moveTo(cX,cY);
-  ghctx.lineTo(mX,cY);   // horizontal to marker x
-  ghctx.lineTo(mX,mY);   // vertical to marker y
+  ghctx.moveTo(A.x,A.y);
+  ghctx.lineTo(B.x,B.y);
+  ghctx.lineTo(C.x,C.y);
+  ghctx.lineTo(D.x,D.y);
   ghctx.stroke();
-  // dot at marker
   ghctx.setLineDash([]);
-  ghctx.beginPath(); ghctx.arc(mX,mY,3.5,0,Math.PI*2);
+  ghctx.beginPath(); ghctx.arc(D.x,D.y,3,0,Math.PI*2);
   ghctx.fillStyle="#E8622A"; ghctx.fill();
-  // dot at card
-  ghctx.beginPath(); ghctx.arc(cX,cY,2.5,0,Math.PI*2);
-  ghctx.fill();
   ghctx.restore();
 }
 
@@ -1998,12 +1994,8 @@ function globeLoop(){
   projectedMarkers.sort((a,b)=>a.z-b.z);
   projectedMarkers.forEach(m=>drawMarkerG(m.sx,m.sy,m.type,m.depth,m.label,m.label===selectedLabel,m.scale,m.country));
 
-  // Dynamic connector to selected teacher
-  if(selectedLabel){
-    const sel=projectedMarkers.find(m=>m.label===selectedLabel);
-    if(sel) drawDynamicConnector(sel.sx,sel.sy);
-    else ghctx.clearRect(0,0,710,380); // marker rotated to back
-  }
+  // Connector: fixed to rim, shown when any teacher is selected
+  if(!selectedLabel) ghctx.clearRect(0,0,710,380);
 
   if(!globePaused)rotY+=0.004;
   requestAnimationFrame(globeLoop);
