@@ -18,23 +18,70 @@
             document.getElementById('get-started-cta').style.opacity = '1';
         })();
 
-        function _applyCardStyles(teacherMode) {
+        const _atlasTeacher = `
+            <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:6px;line-height:1.3;color:#F0E6DC;">Your Students</div>
+            <div style="font-family:'Courier Prime',monospace;font-style:italic;font-size:11px;margin-bottom:10px;color:rgba(240,230,220,0.6);">learn from anywhere</div>
+            Reach students from every corner of the world. They choose you, your method, your pace. No middlemen.<br><br>
+            Your teaching shapes their path. Every interaction leaves a mark.
+            <div style="margin-top:16px;">
+                <button onclick="showPage('tutors')" style="background:#E8622A;color:#1E1208;border:none;font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;width:100%;">Meet your students →</button>
+            </div>`;
+        const _atlasStudent = `
+            <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:6px;line-height:1.3;">Your Teachers</div>
+            <div style="font-family:'Courier Prime',monospace;font-style:italic;font-size:11px;margin-bottom:10px;color:rgba(26,18,8,0.65);">decentralized &amp; borderless</div>
+            Use our platform with your teachers or search from our incredible pool of teachers, from all around the world, native to the platform.<br><br>
+            Interactions with teachers guide your brushstrokes while you paint your own learning path.
+            <div style="margin-top:16px;">
+                <button onclick="showPage('tutors')" style="background:#1E1208;color:#E8622A;border:none;font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;width:100%;">Find a tutor →</button>
+            </div>`;
+        const _spiroTeacher = `
+            <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;color:#1E1208;">Your Teaching</div>
+            <div style="font-style:italic;margin-bottom:10px;color:rgba(30,18,8,0.65);">Structure meets flow.</div>
+            Your teaching is as unique as your students, shaped by your methods, your subjects, and the learners you bring along. Each session leaves its own signature.<br><br>
+            We handle the infrastructure: scheduling, payments, progress tracking. All simple, easy to manage. You focus on teaching.
+            <div style="margin-top:16px;">
+                <a onclick="showPage('register');setTimeout(()=>showRegForm('tutor'),100);" style="display:block;background:#1E1208;color:#F0E6DC;font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;text-align:center;text-decoration:none;">Register as a teacher →</a>
+            </div>`;
+        const _spiroStudent = `
+            <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;color:#F0E6DC;">Your Learning</div>
+            <div style="font-style:italic;margin-bottom:10px;color:rgba(240,230,220,0.75);">Tech meets Art.</div>
+            Your learning is specific to your choices, your own learning styles, personality and the teachers you'd like to bring along in this journey. The process leaves a signature, like an artwork.<br><br>
+            We handle the infrastructure: teachers, subjects and learning data, all simple to use, easy to analyze and save. You'd have all the best tools to make this artwork your own.
+            <div style="margin-top:16px;">
+                <a onclick="showPage('register');setTimeout(()=>showRegForm('student'),100);" style="display:block;background:#E8622A;color:#1E1208;font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;text-align:center;text-decoration:none;">Register as a student →</a>
+            </div>`;
+
+        function _applyCardStyles(teacher) {
             const ac = document.getElementById('atlas-card');
             const sc = document.getElementById('spiro-card');
-            if (teacherMode) {
+            if (teacher) {
                 ac.style.background = '#1E1208'; ac.style.color = '#F0E6DC';
-                ac.children[0].style.color = '#F0E6DC';
-                ac.children[1].style.color = 'rgba(240,230,220,0.6)';
+                ac.innerHTML = _atlasTeacher;
                 sc.style.background = '#F0E6DC'; sc.style.color = '#1E1208';
-                sc.children[0].style.color = '#1E1208';
-                sc.children[1].style.color = 'rgba(30,18,8,0.65)';
+                sc.innerHTML = _spiroTeacher;
             } else {
                 ac.style.background = '#E8622A'; ac.style.color = '#1E1208';
-                ac.children[0].style.color = '';
-                ac.children[1].style.color = 'rgba(26,18,8,0.65)';
+                ac.innerHTML = _atlasStudent;
                 sc.style.background = '#1E1208'; sc.style.color = '#F0E6DC';
-                sc.children[0].style.color = '#F0E6DC';
-                sc.children[1].style.color = 'rgba(240,230,220,0.75)';
+                sc.innerHTML = _spiroStudent;
+            }
+            const UI_IDS = ['atlas-label','spiro-label','name-row','slider-row','pen-desc','globe-hint','globe-stop','spiro-pause','spiro-clear'];
+            if (teacher) {
+                UI_IDS.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.style.color = 'rgba(30,18,8,0.75)';
+                    if (el.tagName === 'BUTTON') el.style.borderColor = 'rgba(30,18,8,0.25)';
+                });
+                document.getElementById('globe-hint').style.opacity = '0.85';
+            } else {
+                UI_IDS.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.style.color = '';
+                    if (el.tagName === 'BUTTON') el.style.borderColor = '';
+                });
+                document.getElementById('globe-hint').style.opacity = '0.5';
             }
         }
 
@@ -49,8 +96,11 @@
                 const scrollCue = document.getElementById('scroll-cue');
                 hero.style.background = 'var(--cream)';
                 hero.style.borderBottom = '1px solid var(--dim)';
+                hero.style.justifyContent = 'flex-start';
                 document.querySelector('.hero > div').style.color = 'var(--brown)';
                 document.getElementById('hero-type-text').style.color = 'var(--mid)';
+                document.getElementById('tag-line1').style.color = 'var(--brown)';
+                document.getElementById('tag-line2').style.color = 'var(--rust)';
                 document.getElementById('get-started-cta').style.display = 'none';
                 _applyCardStyles(false);
                 heroVisuals.classList.remove('spiro-revealed');
@@ -82,8 +132,11 @@
                 const scrollCue = document.getElementById('scroll-cue');
                 hero.style.background = 'var(--accent)';
                 hero.style.borderBottom = '1px solid rgba(30,18,8,0.15)';
+                hero.style.justifyContent = 'flex-start';
                 document.querySelector('.hero > div').style.color = 'var(--brown)';
-                document.getElementById('hero-type-text').style.color = 'rgba(30,18,8,0.55)';
+                document.getElementById('hero-type-text').style.color = 'rgba(30,18,8,0.75)';
+                document.getElementById('tag-line1').style.color = 'var(--brown)';
+                document.getElementById('tag-line2').style.color = 'var(--parchment)';
                 document.getElementById('get-started-cta').style.display = 'none';
                 _applyCardStyles(true);
                 heroVisuals.classList.remove('spiro-revealed');
@@ -129,14 +182,17 @@
                 if (hero) {
                     hero.style.background = 'var(--brown)';
                     hero.style.borderBottom = '1px solid rgba(240,230,220,0.08)';
+                    hero.style.justifyContent = 'center';
                     hero.style.opacity = '1';
                 }
                 document.querySelector('.hero > div').style.color = 'var(--parchment)';
+                document.getElementById('tag-line1').style.color = 'var(--parchment)';
+                document.getElementById('tag-line2').style.color = 'var(--accent)';
                 if (typeof setTeacherMode === 'function') setTeacherMode(false);
                 _applyCardStyles(false);
                 const atlasCard = document.getElementById('atlas-card');
                 if (atlasCard) atlasCard.style.opacity = '0';
-                if (heroTypeText) heroTypeText.style.color = 'rgba(240,230,220,0.6)';
+                if (heroTypeText) heroTypeText.style.color = 'rgba(240,230,220,0.88)';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
             // Reset register to choice screen when navigating to it

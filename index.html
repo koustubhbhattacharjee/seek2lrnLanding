@@ -27,7 +27,7 @@
         <section class="hero" style="
             min-height:100vh; background:var(--brown);
             display:flex; flex-direction:column;
-            align-items:center; justify-content:flex-start;
+            align-items:center; justify-content:center;
             padding:90px 20px 60px; gap:0;
             border-bottom:1px solid rgba(240,230,220,0.08); position:relative;
         ">
@@ -35,9 +35,9 @@
             <div style="font-family:'Cormorant Garamond',serif;font-weight:700;font-style:italic;font-size:2.4rem;letter-spacing:-0.02em;color:var(--parchment);margin-bottom:12px;">seek2lrn<sup style="font-size:0.45em;vertical-align:super;line-height:0;">&reg;</sup></div>
 
             <!-- global talent tagline -->
-            <div style="text-align:center;line-height:0.9;margin-bottom:24px;">
-                <div style="font-family:'IM Fell English',serif;font-weight:900;font-size:2.8rem;letter-spacing:-0.03em;color:var(--rust);">Global talent.</div>
-                <div style="font-family:'IM Fell English',serif;font-weight:900;font-size:2.8rem;font-style:italic;letter-spacing:-0.03em;color:var(--accent);">Local impact.</div>
+            <div style="text-align:center;line-height:1.05;margin-bottom:28px;">
+                <div id="tag-line1" style="font-family:'IM Fell English',serif;font-weight:900;font-size:2.8rem;letter-spacing:-0.03em;color:var(--parchment);">Global talent.</div>
+                <div id="tag-line2" style="font-family:'IM Fell English',serif;font-weight:900;font-size:2.8rem;font-style:italic;letter-spacing:-0.03em;color:var(--accent);">Local impact.</div>
             </div>
 
             <!-- globe + knowledge spirograph side by side -->
@@ -69,7 +69,7 @@
                     <div id="atlas-mobile-intro" style="display:none;width:100%;font-family:'Courier Prime',monospace;font-size:9px;color:var(--mid);line-height:1.6;margin-bottom:6px;">
                         Pick any teacher, anywhere in the world. Shapes on the globe are tutors — tap one to add them to your spirograph.
                     </div>
-                    <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">atlas</div>
+                    <div id="atlas-label" style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">atlas</div>
                     <div style="height:28px;display:flex;align-items:center;justify-content:center;">
                         <div id="globe-hint" style="font-size:11px;color:var(--mid);opacity:0.5;font-family:'Crimson Pro',serif;letter-spacing:0.04em;transition:font-size 0.35s ease,opacity 0.35s ease,color 0.35s ease,text-shadow 0.35s ease;">click any shape (◻ △ ○) to add to spirograph</div>
                     </div>
@@ -81,8 +81,8 @@
                 </div>
 
                 <div id="spiro-col" style="display:flex;flex-direction:column;align-items:center;gap:8px;width:380px;flex-shrink:0;">
-                    <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">knowledge spirograph</div>
-                    <div style="display:flex;align-items:center;gap:8px;font-family:'Courier Prime',monospace;font-size:10px;color:var(--mid);margin-top:3px;">
+                    <div id="spiro-label" style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">knowledge spirograph</div>
+                    <div id="name-row" style="display:flex;align-items:center;gap:8px;font-family:'Courier Prime',monospace;font-size:10px;color:var(--mid);margin-top:3px;">
                         <span style="opacity:0.6;white-space:nowrap;">tutor name:</span>
                         <div id="recent-cities" style="display:flex;gap:12px;align-items:center;flex-wrap:nowrap;overflow:hidden;">
                             <span style="opacity:0.4;font-size:10px;">no tutors yet</span>
@@ -93,13 +93,13 @@
                     <canvas id="spiro-hover-overlay" width="760" height="380" style="position:absolute;top:0;left:-330px;pointer-events:none;z-index:5;"></canvas>
                 </div>
                     <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:380px;">
-                        <div style="display:flex;align-items:center;gap:10px;width:100%;font-family:'Courier Prime',monospace;font-size:9px;color:var(--mid);">
+                        <div id="slider-row" style="display:flex;align-items:center;gap:10px;width:100%;font-family:'Courier Prime',monospace;font-size:9px;color:var(--mid);">
                             <span style="white-space:nowrap;opacity:0.6;">center</span>
                             <input id="pen-slider" type="range" min="0" max="160" value="95"
                                 style="flex:1;accent-color:var(--accent);cursor:pointer;height:2px;">
                             <span style="white-space:nowrap;opacity:0.6;">vertex</span>
                         </div>
-                        <div style="font-family:'Courier Prime',monospace;font-size:8px;color:var(--ink);opacity:0.82;text-align:center;line-height:1.5;">
+                        <div id="pen-desc" style="font-family:'Courier Prime',monospace;font-size:8px;color:var(--ink);opacity:0.82;text-align:center;line-height:1.5;">
                             pen offset — drag to move the drawing point from the<br>centre of the rolling shape to its outer edge
                         </div>
                         <div style="display:flex;gap:10px;">
@@ -137,7 +137,7 @@
 
             <!-- tagline -->
             <div id="hero-tagline" style="margin-top:24px;text-align:center;max-width:520px;">
-                <p id="hero-type-text" style="font-family:'Crimson Pro',serif;font-size:1.15rem;color:rgba(240,230,220,0.6);line-height:1.85;letter-spacing:0em;margin:0;font-weight:300;"></p>
+                <p id="hero-type-text" style="font-family:'Crimson Pro',serif;font-size:1.15rem;color:rgba(240,230,220,0.88);line-height:1.85;letter-spacing:0em;margin:0;font-weight:300;"></p>
             </div>
 
             <!-- get started CTA -->
@@ -151,8 +151,8 @@
                         padding:12px 30px;cursor:pointer;
                     ">as a student</button>
                     <button onclick="showTeacherView()" style="
-                        background:none;color:rgba(240,230,220,0.4);
-                        border:1px solid rgba(240,230,220,0.15);font-family:'Crimson Pro',serif;
+                        background:var(--parchment);color:var(--brown);
+                        border:none;font-family:'Crimson Pro',serif;
                         font-size:1.05rem;font-weight:400;letter-spacing:0.02em;
                         padding:12px 30px;cursor:pointer;
                     ">as a teacher</button>
