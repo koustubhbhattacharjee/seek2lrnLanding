@@ -1040,14 +1040,14 @@
     <!-- ===== HOME PAGE ===== -->
     <div id="page-home" class="page active">
         <section class="hero" style="
-            height:100vh; background:var(--cream);
+            height:100vh; background:var(--brown);
             display:flex; flex-direction:column;
             align-items:center; justify-content:center;
             padding:80px 20px 40px; gap:0;
-            border-bottom:1px solid var(--dim); position:relative;
+            border-bottom:1px solid rgba(240,230,220,0.08); position:relative;
         ">
             <!-- logo -->
-            <div style="font-family:'IM Fell English',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px;">seek2lrn<sup style="font-size:0.45em;vertical-align:super;line-height:0;">&reg;</sup></div>
+            <div style="font-family:'IM Fell English',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--parchment);margin-bottom:24px;">seek2lrn<sup style="font-size:0.45em;vertical-align:super;line-height:0;">&reg;</sup></div>
 
             <!-- globe + knowledge spirograph side by side -->
             <div id="hero-visuals" style="position:relative;display:none;gap:40px;align-items:flex-start;justify-content:center;">
@@ -1146,22 +1146,22 @@
 
             <!-- tagline -->
             <div id="hero-tagline" style="margin-top:24px;text-align:center;max-width:580px;">
-                <p id="hero-type-text" style="font-family:'Courier Prime',monospace;font-size:1.05rem;color:var(--mid);line-height:1.9;letter-spacing:0.01em;margin:0;min-height:3.8em;"></p>
+                <p id="hero-type-text" style="font-family:'Crimson Pro',serif;font-size:1.05rem;color:rgba(240,230,220,0.6);line-height:1.9;letter-spacing:0.01em;margin:0;"></p>
             </div>
 
             <!-- get started CTA -->
             <div id="get-started-cta" style="margin-top:40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;opacity:0;transition:opacity 0.8s ease;">
-                <div style="font-family:'IM Fell English',serif;font-size:1.4rem;letter-spacing:0.04em;color:var(--ink);text-transform:uppercase;">get started</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;letter-spacing:0.04em;color:var(--parchment);text-transform:uppercase;">get started</div>
                 <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
                     <button onclick="showStudentView()" style="
-                        background:var(--accent);color:var(--ink);
-                        border:none;font-family:'Courier Prime',monospace;
+                        background:var(--accent);color:var(--brown);
+                        border:none;font-family:'Crimson Pro',serif;
                         font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;
                         padding:14px 32px;cursor:pointer;
                     ">as a student</button>
                     <button onclick="showTeacherPlaceholder()" style="
-                        background:none;color:var(--mid);
-                        border:1px solid var(--dim);font-family:'Courier Prime',monospace;
+                        background:none;color:rgba(240,230,220,0.45);
+                        border:1px solid rgba(240,230,220,0.15);font-family:'Crimson Pro',serif;
                         font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;
                         padding:14px 32px;cursor:pointer;
                     ">as a teacher</button>
@@ -1170,13 +1170,13 @@
 
             <!-- teacher placeholder (hidden) -->
             <div id="teacher-placeholder" style="display:none;margin-top:32px;text-align:center;">
-                <div style="font-family:'Courier Prime',monospace;font-size:0.65rem;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">coming soon</div>
-                <div style="width:64px;height:64px;border:1px solid var(--dim);display:flex;align-items:center;justify-content:center;margin:0 auto;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="color:var(--mid);opacity:0.4;">
+                <div style="font-family:'Crimson Pro',serif;font-size:0.65rem;color:rgba(240,230,220,0.35);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">coming soon</div>
+                <div style="width:64px;height:64px;border:1px solid rgba(240,230,220,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="color:rgba(240,230,220,0.25);">
                         <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
                     </svg>
                 </div>
-                <div style="font-family:'Courier Prime',monospace;font-size:0.62rem;color:var(--mid);margin-top:10px;opacity:0.5;">teacher onboarding is in progress</div>
+                <div style="font-family:'Crimson Pro',serif;font-size:0.62rem;color:rgba(240,230,220,0.3);margin-top:10px;">teacher onboarding is in progress</div>
             </div>
 
         </section>
