@@ -892,16 +892,17 @@
                 border-bottom: none;
             }
 
-            /* ── Hero section — let content grow naturally ── */
+            /* ── Hero section — first screen: text + CTA only ── */
             .hero {
                 height: auto !important;
                 min-height: 100vh;
-                justify-content: flex-start !important;
-                padding-top: 80px !important;
-                padding-bottom: 48px !important;
+                justify-content: center !important;
+                padding: 80px 16px 48px !important;
             }
-            /* Order: logo(0) → tagline(1) → sidecar(2) → visuals(3) */
-            #hero-tagline { order: 1; margin-top: 8px; margin-bottom: 16px; }
+            /* Order: logo → tagline → cta → visuals */
+            #hero-tagline { order: 1; margin-top: 12px; margin-bottom: 0; }
+            #get-started-cta { order: 2; }
+            #teacher-placeholder { order: 2; }
             #hero-sidecar {
                 order: 2;
                 position: static;
@@ -917,33 +918,47 @@
             .sidecar-body { text-align: center; }
             #hero-visuals { order: 3; }
 
-            /* ── Hero canvas area ── */
+            /* ── Hero canvas area: stacked, full-width ── */
             #hero-visuals {
+                display: flex !important;
                 flex-direction: column !important;
-                gap: 24px !important;
                 align-items: center !important;
+                gap: 16px !important;
+                width: 100% !important;
             }
-            #globe-wrap, #spiro-wrap {
-                width: 300px !important;
-                height: 300px !important;
-            }
-            #globe-c, #spiro-c {
-                width: 300px !important;
-                height: 300px !important;
-            }
-            #globe-hover-overlay, #spiro-hover-overlay { display: none !important; }
+            /* Dissolve globe-col so its children slot directly into the flex column */
+            #globe-col { display: contents !important; }
+            #atlas-mobile-intro { display: none !important; }
 
-            /* ── Reorder flex children: globe → atlas-card → spiro-col ── */
-            #hero-visuals > div:nth-child(2) { order: 1; } /* globe column */
+            /* Order: atlas label(1) → card(2) → hint(3) → globe(4) → stop btn(5) → spiro(6) */
+            #globe-col > div:nth-child(2) { order: 1; } /* "atlas" label */
             #atlas-card {
+                order: 2;
                 display: block !important;
                 position: static !important;
                 opacity: 1 !important;
                 width: 100% !important;
-                max-width: 300px;
-                order: 2; /* sits right below globe */
+                transition: none !important;
             }
-            #hero-visuals > div:nth-child(3) { order: 3; } /* spiro column */
+            #globe-col > div:nth-child(3) { display: none !important; } /* hide "(click ↓)" */
+            #globe-wrap {
+                order: 4;
+                width: calc(100vw - 32px) !important;
+                height: calc(100vw - 32px) !important;
+                max-width: 360px !important;
+                max-height: 360px !important;
+            }
+            #globe-c   { width: 100% !important; height: 100% !important; }
+            #globe-stop { order: 5; }
+            #hero-visuals > div:last-child { order: 6; width: 100%; }
+            #spiro-wrap {
+                width: calc(100vw - 32px) !important;
+                height: calc(100vw - 32px) !important;
+                max-width: 360px !important;
+                max-height: 360px !important;
+            }
+            #spiro-c   { width: 100% !important; height: 100% !important; }
+            #globe-hover-overlay, #spiro-hover-overlay { display: none !important; }
 
             /* spiro-card is already inside spiro column after the canvas — just un-absolute it */
             #spiro-card {
@@ -1034,7 +1049,7 @@
             <div style="font-family:'IM Fell English',serif;font-weight:900;font-style:italic;font-size:2.2rem;letter-spacing:-0.02em;color:var(--ink);margin-bottom:24px;">seek2lrn&reg;</div>
 
             <!-- globe + knowledge spirograph side by side -->
-            <div id="hero-visuals" style="position:relative;display:flex;gap:40px;align-items:flex-start;justify-content:center;">
+            <div id="hero-visuals" style="position:relative;display:none;gap:40px;align-items:flex-start;justify-content:center;">
             <!-- hover card -->
             <div id="atlas-card" style="
                 position:absolute;left:-290px;top:60px;
@@ -1045,10 +1060,9 @@
                 transition:opacity 0.4s ease;
                 z-index:10;
             ">
-                <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;">The Atlas</div>
-                Seek2lrn lets you pick any teacher, from anywhere in the world, curated for you.<br><br>
-                Shapes in this globe represent tutors from various parts of the world.<br><br>
-                Click on one of them to use their knowledge in knowledge spirograph.
+                <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;">Your Teachers</div>
+                Use our platform with your teachers or search from our incredible pool of teachers, from all around the world, native to the platform.<br><br>
+                Interactions with teachers guide your brushstrokes while you carve out your own learning artwork.
                 <div style="margin-top:16px;">
                     <button onclick="showPage('tutors')" style="
                         background:#1E1208;color:#E8622A;
@@ -1058,7 +1072,10 @@
                     ">Find a tutor →</button>
                 </div>
             </div>
-                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <div id="globe-col" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div id="atlas-mobile-intro" style="display:none;width:100%;font-family:'Courier Prime',monospace;font-size:9px;color:var(--mid);line-height:1.6;margin-bottom:6px;">
+                        Pick any teacher, anywhere in the world. Shapes on the globe are tutors — tap one to add them to your spirograph.
+                    </div>
                     <div style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">atlas</div>
                     <div style="font-size:9px;color:var(--mid);opacity:0.6;margin-top:2px;font-family:'Courier Prime',monospace;">(click ↓ any shape to add to spirograph)</div>
                     <div id="globe-wrap" style="position:relative;width:380px;height:380px;">
@@ -1105,10 +1122,10 @@
                     transition:opacity 0.4s ease;
                     z-index:10;
                 ">
-                    <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;color:#F0E6DC;">Knowledge Spirograph</div>
-                    At seek2lrn, each individual's learning journey, like a piece of art, is unique.<br><br>
-                    You'll have teachers from all around the world, vast array of subjects from the essentials to the eccentric, and all modern e-learning tools at your disposal. You are in complete control of your journey.<br><br>
-                    Carve out your path.
+                    <div style="font-family:'IM Fell English',serif;font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3;color:#F0E6DC;">Your Learning</div>
+                    <div style="font-style:italic;margin-bottom:10px;color:rgba(240,230,220,0.75);">Tech meets Art.</div>
+                    Your learning is specific to your choices — your own learning styles, personality and the teachers you'd like to bring along in this journey. The process leaves a signature, like an artwork.<br><br>
+                    We handle the infrastructure: teachers, subjects and learning data, all simple to use, easy to analyze and save. You'd have all the best tools to make this artwork your own.
                     <div style="margin-top:16px;">
                         <a onclick="showPage('register');setTimeout(()=>showRegForm('student'),100);" style="
                             display:block;background:#E8622A;color:#1E1208;
@@ -1123,18 +1140,43 @@
                 </div>
             </div>
 
-            <!-- bottom text -->
-            <div id="hero-tagline" style="margin-top:28px;text-align:center;">
-                <div style="font-family:'IM Fell English',serif;font-weight:900;font-size:2.8rem;line-height:0.9;letter-spacing:-0.03em;color:var(--ink);">Global talent.</div>
-                <div style="font-family:'IM Fell English',serif;font-weight:900;font-size:2.8rem;font-style:italic;line-height:0.9;letter-spacing:-0.03em;color:var(--rust);">Local impact.</div>
+            <!-- tagline -->
+            <div id="hero-tagline" style="margin-top:20px;text-align:center;max-width:540px;">
+                <p style="font-family:'Courier Prime',monospace;font-size:0.78rem;color:var(--mid);line-height:1.8;letter-spacing:0.01em;margin:0;">
+                    Seek2lrn is a decentralized, open-access marketplace that enables direct, borderless interaction between educators and learners.
+                </p>
             </div>
 
-            <!-- sidecar -->
-            <div id="hero-sidecar">
-                <div class="sidecar-rule"></div>
-                <div class="sidecar-label">about the platform</div>
-                <p class="sidecar-body">Seek2lrn is a marketplace for tutors and students from all over the world. Teach, learn, explore and connect with people around the world without the fear of exorbitant fees. We create the platform for you to build your community.</p>
+            <!-- get started CTA -->
+            <div id="get-started-cta" style="margin-top:36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;">
+                <div style="font-family:'IM Fell English',serif;font-size:1.1rem;letter-spacing:0.04em;color:var(--ink);text-transform:uppercase;">get started</div>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
+                    <button onclick="showStudentView()" style="
+                        background:var(--accent);color:var(--ink);
+                        border:none;font-family:'Courier Prime',monospace;
+                        font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;
+                        padding:12px 28px;cursor:pointer;
+                    ">as a student</button>
+                    <button onclick="showTeacherPlaceholder()" style="
+                        background:none;color:var(--mid);
+                        border:1px solid var(--dim);font-family:'Courier Prime',monospace;
+                        font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;
+                        padding:12px 28px;cursor:pointer;opacity:0.6;
+                    ">as a teacher</button>
+                </div>
             </div>
+
+            <!-- teacher placeholder (hidden) -->
+            <div id="teacher-placeholder" style="display:none;margin-top:32px;text-align:center;">
+                <div style="font-family:'Courier Prime',monospace;font-size:0.65rem;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;opacity:0.5;margin-bottom:10px;">coming soon</div>
+                <div style="width:64px;height:64px;border:1px solid var(--dim);display:flex;align-items:center;justify-content:center;margin:0 auto;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="color:var(--mid);opacity:0.4;">
+                        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
+                </div>
+                <div style="font-family:'Courier Prime',monospace;font-size:0.62rem;color:var(--mid);margin-top:10px;opacity:0.5;">teacher onboarding is in progress</div>
+            </div>
+
         </section>
 
         <section class="interactive-section" id="interact">
@@ -1379,6 +1421,19 @@
         function closeMenu() {
             document.getElementById('nav-links').classList.remove('open');
             document.getElementById('menu-toggle').classList.remove('open');
+        }
+
+        function showStudentView() {
+            document.getElementById('get-started-cta').style.display = 'none';
+            document.getElementById('teacher-placeholder').style.display = 'none';
+            const v = document.getElementById('hero-visuals');
+            v.style.display = 'flex';
+            v.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function showTeacherPlaceholder() {
+            document.getElementById('get-started-cta').querySelector('div:last-child').style.display = 'none';
+            document.getElementById('teacher-placeholder').style.display = 'block';
         }
 
         function showPage(id) {
