@@ -1759,100 +1759,55 @@ const gc     = document.getElementById("globe-c");
 const gctx   = gc.getContext("2d");
 const gHover = document.getElementById("globe-hover-overlay");
 const ghctx  = gHover.getContext("2d");
-let globeHovered = false, hoverAnimId2, hoverT = 0;
+let globeHovered = false;
 
-// L-connector from globe edge to card
-function drawHoverConnector(t) {
-  ghctx.clearRect(0,0,710,380);
-  if(t<=0) return;
-
-  // Overlay canvas: 710px wide, left edge = -330px from row origin
-  // Card right edge in overlay coords: (-290+250) - (-330) = 290px, y≈155
-  // Globe left rim in overlay coords: (0+20) - (-330) = 350px
-  // 3-segment L (2 right-angle turns):
-  //   A = card right edge center (290, 155)
-  //   B = (290, 80)   — go up
-  //   C = (350, 80)   — go right to rim x
-  //   D = (350, 155)  — go down to rim center y (connects to globe rim)
-  const A={x:290,y:155};
-  const B={x:290,y:80};
-  const C={x:350,y:80};
-  const D={x:350,y:155};
-
-  const s1=A.y-B.y;       // up
-  const s2=C.x-B.x;       // right
-  const s3=D.y-C.y;       // down
-  const total=s1+s2+s3;
-  const prog=t*total;
-
-  ghctx.save();
-  ghctx.strokeStyle="#E8622A";
-  ghctx.lineWidth=1.2;
-  ghctx.setLineDash([4,3]);
-  ghctx.beginPath();
-  ghctx.moveTo(A.x,A.y);
-  if(prog<=s1){
-    ghctx.lineTo(A.x, A.y-prog);
-  } else if(prog<=s1+s2){
-    ghctx.lineTo(B.x,B.y);
-    ghctx.lineTo(B.x+(prog-s1), B.y);
-  } else {
-    ghctx.lineTo(B.x,B.y);
-    ghctx.lineTo(C.x,C.y);
-    ghctx.lineTo(C.x, C.y+(prog-s1-s2));
-  }
-  ghctx.stroke();
-  ghctx.setLineDash([]);
-
-  // dot where it meets the globe rim
-  if(t>=1){
-    ghctx.beginPath();
-    ghctx.arc(D.x,D.y,3,0,Math.PI*2);
-    ghctx.fillStyle="#E8622A";
-    ghctx.fill();
-  }
-  ghctx.restore();
-}
-
-function animateHover(dir) {
-  if(hoverAnimId2) cancelAnimationFrame(hoverAnimId2);
-  const speed = 0.06;
-  function step(){
-    hoverT = Math.max(0, Math.min(1, hoverT + dir*speed));
-    drawHoverConnector(hoverT);
-    document.getElementById("atlas-card").style.opacity = hoverT;
-    if((dir>0 && hoverT<1)||(dir<0 && hoverT>0))
-      hoverAnimId2=requestAnimationFrame(step);
-  }
-  step();
-}
-
+// Hint glow on globe hover (independent of card)
 gc.addEventListener("mouseenter",()=>{
-  globeHovered=true; animateHover(1);
   const h=document.getElementById("globe-hint");
-  h.style.fontSize="19px";
-  h.style.opacity="1";
+  h.style.fontSize="19px"; h.style.opacity="1";
   h.style.color="#E8622A";
   h.style.textShadow="0 0 12px rgba(232,98,42,0.5), 0 0 28px rgba(232,98,42,0.25)";
   h.classList.add("glisten");
 });
 gc.addEventListener("mouseleave",()=>{
-  globeHovered=false;
   const h=document.getElementById("globe-hint");
-  h.style.fontSize="11px";
-  h.style.opacity="0.5";
-  h.style.color="var(--mid)";
-  h.style.textShadow="none";
+  h.style.fontSize="11px"; h.style.opacity="0.5";
+  h.style.color="var(--mid)"; h.style.textShadow="none";
   h.classList.remove("glisten");
-  setTimeout(()=>{
-    const card=document.getElementById("atlas-card");
-    if(!card.matches(":hover")) animateHover(-1);
-  }, 50);
 });
-document.getElementById("atlas-card").addEventListener("mouseenter",()=>{ animateHover(1); });
-document.getElementById("atlas-card").addEventListener("mouseleave",()=>{
-  setTimeout(()=>{ if(!gc.matches(":hover")) animateHover(-1); }, 50);
-});
+
+// Atlas card: shown/hidden on teacher selection, not hover
+let atlasCardVisible=false;
+function showAtlasCard(){
+  if(atlasCardVisible) return;
+  atlasCardVisible=true;
+  const card=document.getElementById("atlas-card");
+  card.style.transition="opacity 0.4s ease";
+  card.style.opacity="1";
+}
+
+// Dynamic connector — called every frame from globeLoop when a teacher is selected
+function drawDynamicConnector(sx,sy){
+  // overlay coords: globe canvas pixel (sx,sy) → overlay (sx+330, sy)
+  const mX=sx+330, mY=sy;
+  const cX=290, cY=155; // card right-edge centre in overlay
+  ghctx.clearRect(0,0,710,380);
+  ghctx.save();
+  ghctx.strokeStyle="#E8622A"; ghctx.lineWidth=1.2; ghctx.setLineDash([4,3]);
+  ghctx.beginPath();
+  ghctx.moveTo(cX,cY);
+  ghctx.lineTo(mX,cY);   // horizontal to marker x
+  ghctx.lineTo(mX,mY);   // vertical to marker y
+  ghctx.stroke();
+  // dot at marker
+  ghctx.setLineDash([]);
+  ghctx.beginPath(); ghctx.arc(mX,mY,3.5,0,Math.PI*2);
+  ghctx.fillStyle="#E8622A"; ghctx.fill();
+  // dot at card
+  ghctx.beginPath(); ghctx.arc(cX,cY,2.5,0,Math.PI*2);
+  ghctx.fill();
+  ghctx.restore();
+}
 
 // Spiro card hover
 const sHover = document.getElementById("spiro-hover-overlay");
@@ -2043,6 +1998,13 @@ function globeLoop(){
   projectedMarkers.sort((a,b)=>a.z-b.z);
   projectedMarkers.forEach(m=>drawMarkerG(m.sx,m.sy,m.type,m.depth,m.label,m.label===selectedLabel,m.scale,m.country));
 
+  // Dynamic connector to selected teacher
+  if(selectedLabel){
+    const sel=projectedMarkers.find(m=>m.label===selectedLabel);
+    if(sel) drawDynamicConnector(sel.sx,sel.sy);
+    else ghctx.clearRect(0,0,710,380); // marker rotated to back
+  }
+
   if(!globePaused)rotY+=0.004;
   requestAnimationFrame(globeLoop);
 }
@@ -2059,6 +2021,7 @@ gc.addEventListener("click",e=>{
   if(best&&bestD<28){
     selectedShape=best.type;
     selectedLabel=best.label;
+    showAtlasCard();
     sR=best.r||67; sD=best.d||67; sSpeed=best.speed||0.09;
     sPrev=null; introT0=t_s;
     const sl=document.getElementById("pen-slider");
