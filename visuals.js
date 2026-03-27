@@ -201,12 +201,12 @@ function animateSpiroHover(dir){
 const spiroCanvas=document.getElementById("spiro-c");
 spiroCanvas.addEventListener("mouseenter",()=>{
   spiroHovered=true; animateSpiroHover(1);
+  const hoverCol=isTeacher?'#ffffff':'#E8622A';
+  const hoverShadow=isTeacher
+    ?'0 0 10px rgba(255,255,255,0.6),0 0 22px rgba(255,255,255,0.3)'
+    :'0 0 10px rgba(232,98,42,0.5),0 0 22px rgba(232,98,42,0.25)';
   document.querySelectorAll('#recent-cities span[data-col]').forEach(chip=>{
-    chip.style.fontSize='14px';
-    chip.style.color=isTeacher?'#ffffff':'#E8622A';
-    chip.style.textShadow=isTeacher
-      ?'0 0 10px rgba(255,255,255,0.6),0 0 22px rgba(255,255,255,0.3)'
-      :'0 0 10px rgba(232,98,42,0.5),0 0 22px rgba(232,98,42,0.25)';
+    chip.querySelectorAll('span').forEach(s=>{ s.style.color=hoverCol; s.style.textShadow=hoverShadow; });
   });
 });
 spiroCanvas.addEventListener("mouseleave",()=>{
@@ -216,9 +216,8 @@ spiroCanvas.addEventListener("mouseleave",()=>{
     if(!card.matches(":hover")) animateSpiroHover(-1);
   }, 50);
   document.querySelectorAll('#recent-cities span[data-col]').forEach(chip=>{
-    chip.style.fontSize='10px';
-    chip.style.color=chip.dataset.col;
-    chip.style.textShadow='none';
+    const col=chip.dataset.col;
+    chip.querySelectorAll('span').forEach(s=>{ s.style.color=col; s.style.textShadow='none'; });
   });
 });
 document.getElementById("spiro-card").addEventListener("mouseenter",()=>{ animateSpiroHover(1); });
@@ -473,16 +472,18 @@ function updateRecent(){
     el.innerHTML='<span style="opacity:0.4;font-size:10px;height:20px;display:flex;align-items:center;">no tutors yet</span>';
     return;
   }
+  const SHAPE_SYM={tri:"△",sq:"◻",ci:"○"};
   recentCities.forEach((c,i)=>{
     const m=MARKERS.find(x=>x.label===c);
     const col=COLORS[m?m.type:"sq"]||"#888";
+    const sym=SHAPE_SYM[m?m.type:"sq"]||"◻";
+    const firstName=c.split(" ")[0];
     const chip=document.createElement("span");
     chip.dataset.col=col;
-    chip.style.cssText=`font-size:10px;font-weight:bold;color:${col};opacity:0;transition:opacity 0.4s ease,font-size 0.3s ease,color 0.3s ease,text-shadow 0.3s ease;white-space:nowrap;height:20px;display:flex;align-items:center;justify-content:center;`;
-    const country=m?` (${m.country})`:"";
+    chip.style.cssText=`display:inline-flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transition:opacity 0.4s ease,color 0.3s ease,text-shadow 0.3s ease;`;
+    chip.innerHTML=`<span style="font-size:26px;line-height:1;color:${col};">${sym}</span><span style="font-size:9px;letter-spacing:0.06em;color:${col};opacity:0.8;white-space:nowrap;">${firstName}</span>`;
     el.appendChild(chip);
-    setTimeout(()=>{ chip.style.opacity="1"; }, i*120);
-    typeOut(chip, c+country, i*120, null);
+    setTimeout(()=>{ chip.style.opacity="1"; }, i*150);
   });
 }
 

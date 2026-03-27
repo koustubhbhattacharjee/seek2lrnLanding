@@ -65,7 +65,7 @@
                 sc.style.background = '#1E1208'; sc.style.color = '#F0E6DC';
                 sc.innerHTML = _spiroStudent;
             }
-            const UI_IDS = ['atlas-label','spiro-label','name-row','slider-row','pen-desc','globe-hint','globe-stop','spiro-pause','spiro-clear'];
+            const UI_IDS = ['name-row','slider-row','pen-desc','globe-hint','globe-stop','spiro-pause','spiro-clear'];
             if (teacher) {
                 UI_IDS.forEach(id => {
                     const el = document.getElementById(id);
@@ -75,9 +75,6 @@
                 });
                 document.getElementById('globe-hint').style.opacity = '1';
                 document.getElementById('globe-hint').textContent = 'Every student is a shape (◻ △ ○). Click on any shape to see their work on the right.';
-                document.getElementById('spiro-label').textContent = 'instruction graph';
-                const nameSpan = document.querySelector('#name-row span');
-                if (nameSpan) nameSpan.textContent = 'student name:';
             } else {
                 UI_IDS.forEach(id => {
                     const el = document.getElementById(id);
@@ -87,9 +84,6 @@
                 });
                 document.getElementById('globe-hint').style.opacity = '0.5';
                 document.getElementById('globe-hint').textContent = 'Every teacher is a shape (◻ △ ○). Click on any shape to see their work on the right.';
-                document.getElementById('spiro-label').textContent = 'knowledge spirograph';
-                const nameSpan = document.querySelector('#name-row span');
-                if (nameSpan) nameSpan.textContent = 'tutor name:';
             }
         }
 
