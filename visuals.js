@@ -225,13 +225,13 @@ document.getElementById("spiro-card").addEventListener("mouseleave",()=>{
   setTimeout(()=>{ if(!spiroCanvas.matches(":hover")) animateSpiroHover(-1); }, 50);
 });
 const GW=380, GCX=190, GCY=190, GR=170;
-let GINК     = "#1a1208";
-let globeFill   = "#ffffff";
-let globeStroke = "rgba(26,18,8,0.1)";
-let spiroFill   = "#fff";
+let GINК     = "#F0E6DC";
+let globeFill   = "#E8622A";
+let globeStroke = "rgba(30,18,8,0.18)";
+let spiroFill   = "#E8622A";
 let spiroRing   = "rgba(26,18,8,0.12)";
-let mechRgb     = "26,18,8";
-let connectorCol = "#E8622A";
+let mechRgb     = "30,18,8";
+let connectorCol = "#1E1208";
 
 let isTeacher = false;
 function setTeacherMode(on) {
@@ -242,10 +242,10 @@ function setTeacherMode(on) {
     spiroFill = "#1E1208"; spiroRing = "rgba(240,230,220,0.18)";
     mechRgb = "240,230,220"; connectorCol = "#F0E6DC";
   } else {
-    COLORS = {sq:"#E8622A", tri:"#8B4513", ci:"#1E1208"};
-    GINК = "#1a1208"; globeFill = "#ffffff"; globeStroke = "rgba(26,18,8,0.1)";
-    spiroFill = "#fff"; spiroRing = "rgba(26,18,8,0.12)";
-    mechRgb = "26,18,8"; connectorCol = "#E8622A";
+    COLORS = {sq:"#F0E6DC", tri:"#1E1208", ci:"#F0E6DC"};
+    GINК = "#F0E6DC"; globeFill = "#E8622A"; globeStroke = "rgba(30,18,8,0.18)";
+    spiroFill = "#E8622A"; spiroRing = "rgba(30,18,8,0.25)";
+    mechRgb = "30,18,8"; connectorCol = "#1E1208";
   }
   soctx.clearRect(0, 0, SW, SW);
   sPrev = null;
@@ -286,7 +286,7 @@ const MARKERS = [
   {lat:21.31,lon:-157.8,type:"tri",label:"Koa Akana",country:"Hawaii",scale:1.2,speed:0.09,r:69,d:69},
   {lat:68.44,lon:17.43,type:"sq",label:"Erik Solberg",country:"Norway",scale:1.6,speed:0.075,r:73,d:73}
 ];
-let COLORS = {sq:"#E8622A",tri:"#8B4513",ci:"#1E1208"};
+let COLORS = {sq:"#F0E6DC",tri:"#1E1208",ci:"#F0E6DC"};
 
 let rotY=0, globePaused=false;
 let projectedMarkers=[];
@@ -478,7 +478,7 @@ function updateRecent(){
   // chip colors must contrast with the hero bg: cream in student mode, orange in teacher mode
   const CHIP_COLORS = isTeacher
     ? {sq:"#1E1208", tri:"#5C2B0A", ci:"#1E1208"}
-    : {sq:"#E8622A", tri:"#8B4513", ci:"#1E1208"};
+    : {sq:"#E8622A", tri:"#1E1208", ci:"#E8622A"};
   recentCities.forEach((c,i)=>{
     const m=MARKERS.find(x=>x.label===c);
     const col=CHIP_COLORS[m?m.type:"sq"]||"#1E1208";
