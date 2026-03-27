@@ -495,7 +495,7 @@ function updateRecent(){
 
 function spiroLoop(){
   if(spiroStarted && !spiroPaused){
-    t_s+=sSpeed;
+    t_s+=sSpeed*5;
     const pt=penPos(t_s);
     if(sPrev){
       soctx.beginPath();
