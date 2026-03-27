@@ -74,7 +74,7 @@
                     </div>
                     <div id="atlas-label" style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">atlas</div>
                     <div style="height:28px;display:flex;align-items:center;justify-content:center;">
-                        <div id="globe-hint" style="font-size:11px;color:var(--mid);opacity:0.5;font-family:'Crimson Pro',serif;letter-spacing:0.04em;transition:font-size 0.35s ease,opacity 0.35s ease,color 0.35s ease,text-shadow 0.35s ease;">click any shape (◻ △ ○) to add to spirograph</div>
+                        <div id="globe-hint" style="font-size:11px;color:var(--mid);opacity:0.5;font-family:'Crimson Pro',serif;letter-spacing:0.04em;transition:font-size 0.35s ease,opacity 0.35s ease,color 0.35s ease,text-shadow 0.35s ease;">Every teacher is a shape (◻ △ ○). Click on any shape to see their work on the right.</div>
                     </div>
                     <div id="globe-wrap" style="position:relative;width:380px;height:380px;">
                     <canvas id="globe-c" width="380" height="380" style="position:absolute;top:0;left:0;cursor:crosshair;"></canvas>
@@ -85,10 +85,10 @@
 
                 <div id="spiro-col" style="display:flex;flex-direction:column;align-items:center;gap:8px;width:380px;flex-shrink:0;">
                     <div id="spiro-label" style="font-size:10px;color:var(--mid);letter-spacing:0.1em;text-transform:uppercase;">knowledge spirograph</div>
-                    <div id="name-row" style="display:flex;align-items:center;gap:8px;font-family:'Courier Prime',monospace;font-size:10px;color:var(--mid);margin-top:3px;">
-                        <span style="opacity:0.6;white-space:nowrap;">tutor name:</span>
-                        <div id="recent-cities" style="display:flex;gap:12px;align-items:center;flex-wrap:nowrap;overflow:hidden;">
-                            <span style="opacity:0.4;font-size:10px;">no tutors yet</span>
+                    <div id="name-row" style="display:flex;flex-direction:column;align-items:center;font-family:'Courier Prime',monospace;color:var(--mid);margin-top:3px;width:100%;">
+                        <span style="opacity:0.6;font-size:10px;letter-spacing:0.06em;margin-bottom:4px;">tutor name:</span>
+                        <div id="recent-cities" style="display:flex;flex-direction:column;align-items:center;height:66px;justify-content:flex-start;gap:2px;width:100%;overflow:hidden;">
+                            <span style="opacity:0.4;font-size:10px;height:20px;display:flex;align-items:center;">no tutors yet</span>
                         </div>
                     </div>
                     <div id="spiro-wrap" style="position:relative;width:380px;height:380px;">

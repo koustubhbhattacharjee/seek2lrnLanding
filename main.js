@@ -74,6 +74,7 @@
                     if (el.tagName === 'BUTTON') el.style.borderColor = 'rgba(30,18,8,0.25)';
                 });
                 document.getElementById('globe-hint').style.opacity = '1';
+                document.getElementById('globe-hint').textContent = 'Every student is a shape (◻ △ ○). Click on any shape to see their work on the right.';
                 document.getElementById('spiro-label').textContent = 'instruction graph';
                 const nameSpan = document.querySelector('#name-row span');
                 if (nameSpan) nameSpan.textContent = 'student name:';
@@ -85,6 +86,7 @@
                     if (el.tagName === 'BUTTON') el.style.borderColor = '';
                 });
                 document.getElementById('globe-hint').style.opacity = '0.5';
+                document.getElementById('globe-hint').textContent = 'Every teacher is a shape (◻ △ ○). Click on any shape to see their work on the right.';
                 document.getElementById('spiro-label').textContent = 'knowledge spirograph';
                 const nameSpan = document.querySelector('#name-row span');
                 if (nameSpan) nameSpan.textContent = 'tutor name:';

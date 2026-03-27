@@ -199,13 +199,27 @@ function animateSpiroHover(dir){
 }
 
 const spiroCanvas=document.getElementById("spiro-c");
-spiroCanvas.addEventListener("mouseenter",()=>{ spiroHovered=true; animateSpiroHover(1); });
+spiroCanvas.addEventListener("mouseenter",()=>{
+  spiroHovered=true; animateSpiroHover(1);
+  document.querySelectorAll('#recent-cities span[data-col]').forEach(chip=>{
+    chip.style.fontSize='14px';
+    chip.style.color=isTeacher?'#ffffff':'#E8622A';
+    chip.style.textShadow=isTeacher
+      ?'0 0 10px rgba(255,255,255,0.6),0 0 22px rgba(255,255,255,0.3)'
+      :'0 0 10px rgba(232,98,42,0.5),0 0 22px rgba(232,98,42,0.25)';
+  });
+});
 spiroCanvas.addEventListener("mouseleave",()=>{
   spiroHovered=false;
   setTimeout(()=>{
     const card=document.getElementById("spiro-card");
     if(!card.matches(":hover")) animateSpiroHover(-1);
   }, 50);
+  document.querySelectorAll('#recent-cities span[data-col]').forEach(chip=>{
+    chip.style.fontSize='10px';
+    chip.style.color=chip.dataset.col;
+    chip.style.textShadow='none';
+  });
 });
 document.getElementById("spiro-card").addEventListener("mouseenter",()=>{ animateSpiroHover(1); });
 document.getElementById("spiro-card").addEventListener("mouseleave",()=>{
@@ -456,14 +470,15 @@ function updateRecent(){
   if(!el) return;
   el.innerHTML="";
   if(recentCities.length===0){
-    el.innerHTML='<span id="no-tutors" style="opacity:0.4;font-size:10px;">no tutors yet</span>';
+    el.innerHTML='<span style="opacity:0.4;font-size:10px;height:20px;display:flex;align-items:center;">no tutors yet</span>';
     return;
   }
   recentCities.forEach((c,i)=>{
     const m=MARKERS.find(x=>x.label===c);
     const col=COLORS[m?m.type:"sq"]||"#888";
     const chip=document.createElement("span");
-    chip.style.cssText=`font-size:10px;font-weight:bold;color:${col};opacity:0;transition:opacity 0.4s ease;white-space:nowrap;`;
+    chip.dataset.col=col;
+    chip.style.cssText=`font-size:10px;font-weight:bold;color:${col};opacity:0;transition:opacity 0.4s ease,font-size 0.3s ease,color 0.3s ease,text-shadow 0.3s ease;white-space:nowrap;height:20px;display:flex;align-items:center;justify-content:center;`;
     const country=m?` (${m.country})`:"";
     el.appendChild(chip);
     setTimeout(()=>{ chip.style.opacity="1"; }, i*120);
