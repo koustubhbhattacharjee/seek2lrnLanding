@@ -119,7 +119,7 @@
                 const globeButton = document.getElementById('globe-stop');
                 if (globeButton) globeButton.textContent = 'stop rotation';
                 heroVisuals.style.display = 'flex';
-                if (interactSection) interactSection.style.display = 'flex';
+                if (interactSection) { interactSection.style.display = 'flex'; interactSection.classList.remove('teacher-mode'); }
                 if (scrollCue) {
                     scrollCue.classList.remove('is-hidden');
                     scrollCue.style.display = 'flex';
@@ -157,7 +157,7 @@
                 const globeButton = document.getElementById('globe-stop');
                 if (globeButton) globeButton.textContent = 'stop rotation';
                 heroVisuals.style.display = 'flex';
-                if (interactSection) interactSection.style.display = 'flex';
+                if (interactSection) { interactSection.style.display = 'flex'; interactSection.classList.add('teacher-mode'); }
                 if (scrollCue) {
                     scrollCue.classList.remove('is-hidden');
                     scrollCue.style.display = 'flex';
@@ -180,7 +180,7 @@
                 const heroTypeText = document.getElementById('hero-type-text');
                 if (heroVisuals) heroVisuals.classList.remove('spiro-revealed');
                 if (heroVisuals) heroVisuals.style.display = 'none';
-                if (interactSection) interactSection.style.display = 'none';
+                if (interactSection) { interactSection.style.display = 'none'; interactSection.classList.remove('teacher-mode'); }
                 if (scrollCue) {
                     scrollCue.classList.remove('is-hidden');
                     scrollCue.style.display = 'none';

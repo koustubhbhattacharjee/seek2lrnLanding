@@ -335,6 +335,23 @@
         }
         .replay-btn:hover { color: var(--accent); }
 
+        /* ── Teacher mode: flipped palette for interactive section ── */
+        #interact.teacher-mode { background-color: var(--parchment); }
+        #interact.teacher-mode .sidebar { border-right-color: rgba(30,18,8,0.12); }
+        #interact.teacher-mode .m-item { color: rgba(30,18,8,0.07); }
+        #interact.teacher-mode .m-item.active { color: var(--accent); }
+        #interact.teacher-mode .desc-p { color: rgba(30,18,8,0.72); }
+        #interact.teacher-mode .replay-btn { color: rgba(30,18,8,0.42); }
+        #interact.teacher-mode .replay-btn:hover { color: var(--accent); }
+        /* v-learn: flip inner circle dark, keep outer ring rust */
+        #interact.teacher-mode #v-learn .s3 { background: rgba(30,18,8,0.04); border-color: rgba(30,18,8,0.12); }
+        #interact.teacher-mode #v-learn .s1 { background: var(--brown); }
+        /* v-connect: second circle flips dark */
+        #interact.teacher-mode #v-connect .s2 { background: var(--brown); }
+        /* v-explore: swap cream↔brown quadrants */
+        #interact.teacher-mode #v-explore .q1 { background: var(--brown); }
+        #interact.teacher-mode #v-explore .q4 { background: #F7F0EA; }
+
         /* ==================
            FIND A TUTOR PAGE
         ================== */
