@@ -249,6 +249,8 @@ function setTeacherMode(on) {
   }
   soctx.clearRect(0, 0, SW, SW);
   sPrev = null;
+  const sl=document.getElementById("pen-slider");
+  if(sl) sl.style.accentColor = on ? "#1E1208" : "var(--accent)";
 }
 
 // scale: visual size multiplier. speed: spiro rotation speed. r,d: spiro params
@@ -473,17 +475,21 @@ function updateRecent(){
     return;
   }
   const SHAPE_SYM={tri:"△",sq:"◻",ci:"○"};
+  // chip colors must contrast with the hero bg: cream in student mode, orange in teacher mode
+  const CHIP_COLORS = isTeacher
+    ? {sq:"#1E1208", tri:"#5C2B0A", ci:"#1E1208"}
+    : {sq:"#E8622A", tri:"#8B4513", ci:"#1E1208"};
   recentCities.forEach((c,i)=>{
     const m=MARKERS.find(x=>x.label===c);
-    const col=COLORS[m?m.type:"sq"]||"#888";
+    const col=CHIP_COLORS[m?m.type:"sq"]||"#1E1208";
     const sym=SHAPE_SYM[m?m.type:"sq"]||"◻";
     const firstName=c.split(" ")[0];
     const chip=document.createElement("span");
     chip.dataset.col=col;
-    chip.style.cssText=`display:inline-flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transition:opacity 0.4s ease,color 0.3s ease,text-shadow 0.3s ease;`;
+    chip.style.cssText=`display:inline-flex;flex-direction:column;align-items:center;gap:5px;opacity:0;transform:scale(0);transition:opacity 0.35s ease,transform 0.4s cubic-bezier(0.34,1.56,0.64,1),color 0.3s ease,text-shadow 0.3s ease;`;
     chip.innerHTML=`<span style="font-size:26px;line-height:1;color:${col};">${sym}</span><span style="font-size:9px;letter-spacing:0.06em;color:${col};opacity:0.8;white-space:nowrap;">${firstName}</span>`;
     el.appendChild(chip);
-    setTimeout(()=>{ chip.style.opacity="1"; }, i*150);
+    setTimeout(()=>{ chip.style.opacity="1"; chip.style.transform="scale(1)"; }, i*150);
   });
 }
 
